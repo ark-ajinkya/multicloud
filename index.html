@@ -1,101 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Files Index</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        .file-link {
-            transition: transform 0.2s ease-in-out;
-        }
-        .file-link:hover {
-            transform: translateX(10px);
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Directory Index</title>
+<style>
+body {
+font-family: Arial, sans-serif;
+background: #f8f9fa;
+padding: 20px;
+}
+h1 {
+color: #333;
+}
+ul {
+list-style: none;
+padding: 0;
+}
+li {
+margin: 8px 0;
+}
+a {
+text-decoration: none;
+color: #007bff;
+}
+a:hover {
+text-decoration: underline;
+}
+</style>
 </head>
-<body class="bg-gray-100 text-gray-800">
+<body>
+<h1>Directory Index</h1>
+<ul id="file-list"></ul>
 
-    <!-- Main Container -->
-    <div class="container mx-auto p-4 sm:p-6 lg:p-8">
-        <div class="bg-white shadow-xl rounded-2xl p-6 sm:p-8 lg:p-10">
-            <h1 class="text-3xl sm:text-4xl font-bold mb-4 text-center text-indigo-700">Project Files Index</h1>
-            <p class="text-center text-gray-600 mb-8">This page lists the files and folders in this project directory.</p>
-            
-            <div class="space-y-4">
-                <!-- Example list of files and folders -->
-                
-                <!-- Folders section -->
-                <div class="bg-gray-50 rounded-lg p-4 shadow-inner">
-                    <h2 class="text-xl font-semibold text-gray-700 mb-2">Folders</h2>
-                    <ul class="list-none space-y-2">
-                        <li>
-                            <a href="./assets/" class="file-link block p-3 rounded-md bg-white hover:bg-indigo-100 text-indigo-600 font-medium">
-                                <span class="mr-2">&#x1F4C1;</span> assets/
-                            </a>
-                        </li>
-                        <li>
-                            <a href="./images/" class="file-link block p-3 rounded-md bg-white hover:bg-indigo-100 text-indigo-600 font-medium">
-                                <span class="mr-2">&#x1F4C1;</span> images/
-                            </a>
-                        </li>
-                        <li>
-                            <a href="./scripts/" class="file-link block p-3 rounded-md bg-white hover:bg-indigo-100 text-indigo-600 font-medium">
-                                <span class="mr-2">&#x1F4C1;</span> scripts/
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                
-                <!-- Files section -->
-                <div class="bg-gray-50 rounded-lg p-4 shadow-inner">
-                    <h2 class="text-xl font-semibold text-gray-700 mb-2">Files</h2>
-                    <ul class="list-none space-y-2">
-                        <li>
-                            <a href="./README.md" class="file-link block p-3 rounded-md bg-white hover:bg-indigo-100 text-indigo-600 font-medium">
-                                <span class="mr-2">&#x1F4C4;</span> README.md
-                            </a>
-                        </li>
-                        <li>
-                            <a href="./main.js" class="file-link block p-3 rounded-md bg-white hover:bg-indigo-100 text-indigo-600 font-medium">
-                                <span class="mr-2">&#x1F4C4;</span> main.js
-                            </a>
-                        </li>
-                        <li>
-                            <a href="./styles.css" class="file-link block p-3 rounded-md bg-white hover:bg-indigo-100 text-indigo-600 font-medium">
-                                <span class="mr-2">&#x1F4C4;</span> styles.css
-                            </a>
-                        </li>
-                    </ul>
-                </div>
 
-                <div class="bg-gray-50 rounded-lg p-4 shadow-inner">
-                  <h2 class="text-xl font-semibold text-gray-700 mb-2">Other files</h2>
-                    <ul class="list-none space-y-2">
-                        <li>
-                            <a href="./LICENSE" class="file-link block p-3 rounded-md bg-white hover:bg-indigo-100 text-indigo-600 font-medium">
-                                <span class="mr-2">&#x1F4C4;</span> LICENSE
-                            </a>
-                        </li>
-                        <li>
-                            <a href="./about.html" class="file-link block p-3 rounded-md bg-white hover:bg-indigo-100 text-indigo-600 font-medium">
-                                <span class="mr-2">&#x1F4C4;</span> about.html
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+<script>
+async function loadFiles() {
+try {
+const repoUrl = window.location.pathname.split("/")[1];
+const user = window.location.hostname.split(".")[0];
+const apiUrl = `https://api.github.com/repos/${user}/${repoUrl}/contents/`;
 
-            <div class="text-center mt-8 text-gray-500 text-sm">
-                <p>Created with HTML, CSS (Tailwind CSS), and a touch of manual work.</p>
-            </div>
-        </div>
-    </div>
+
+const response = await fetch(apiUrl);
+if (!response.ok) throw new Error("Failed to load file list");
+
+
+const files = await response.json();
+const list = document.getElementById("file-list");
+
+
+files.forEach(file => {
+if (file.type === "file" && file.name !== "index.html") {
+const li = document.createElement("li");
+const a = document.createElement("a");
+a.href = file.name;
+a.textContent = file.name;
+li.appendChild(a);
+list.appendChild(li);
+}
+});
+} catch (err) {
+console.error(err);
+document.getElementById("file-list").innerText = "Error loading file list.";
+}
+}
+
+
+loadFiles();
+</script>
 </body>
 </html>
