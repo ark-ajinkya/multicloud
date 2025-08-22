@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LVM in Linux</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f4f6fa;
+            color: #222;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.09);
+            padding: 32px;
+        }
+        h1 {
+            text-align: center;
+            color: #2d5be3;
+            margin-bottom: 16px;
+        }
+        .diagram {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 32px 0;
+        }
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            margin-bottom: 24px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .legend-color {
+            width: 24px;
+            height: 16px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+        .pv { background: #7ec4cf; }
+        .vg { background: #f7b267; }
+        .lv { background: #6dd47e; }
+        .fs { background: #e26a6a; }
+        .disk {
+            display: flex;
+            gap: 32px;
+            margin-bottom: 24px;
+        }
+        .block {
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(44,62,80,0.07);
+            padding: 16px 24px;
+            text-align: center;
+            font-weight: 500;
+            font-size: 1.1em;
+        }
+        .arrow {
+            font-size: 2em;
+            color: #bbb;
+            margin: 0 12px;
+        }
+        .vg-block {
+            margin: 0 0 24px 0;
+            padding: 24px 32px;
+            background: #f7b267;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(44,62,80,0.07);
+            position: relative;
+        }
+        .lv-row {
+            display: flex;
+            gap: 32px;
+            justify-content: center;
+            margin-top: 16px;
+        }
+        .lv-block {
+            background: #6dd47e;
+            border-radius: 8px;
+            padding: 16px 24px;
+            min-width: 120px;
+            box-shadow: 0 2px 8px rgba(44,62,80,0.07);
+            position: relative;
+        }
+        .fs-block {
+            background: #e26a6a;
+            color: #fff;
+            border-radius: 8px;
+            padding: 8px 16px;
+            margin-top: 8px;
+            font-size: 0.95em;
+            box-shadow: 0 1px 4px rgba(44,62,80,0.07);
+        }
+        @media (max-width: 700px) {
+            .disk, .lv-row {
+                flex-direction: column;
+                gap: 16px;
+            }
+            .vg-block {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>LVM in Linux</h1>
+        <div class="legend">
+            <div class="legend-item"><span class="legend-color pv"></span>Physical Volume (PV)</div>
+            <div class="legend-item"><span class="legend-color vg"></span>Volume Group (VG)</div>
+            <div class="legend-item"><span class="legend-color lv"></span>Logical Volume (LV)</div>
+            <div class="legend-item"><span class="legend-color fs"></span>File System</div>
+        </div>
+        <div class="diagram">
+            <!-- Physical Volumes -->
+            <div class="disk">
+                <div class="block pv">Physical Volume 1<br><small>(/dev/sda1)</small></div>
+                <div class="block pv">Physical Volume 2<br><small>(/dev/sdb1)</small></div>
+            </div>
+            <div class="arrow">&#8595;</div>
+            <!-- Volume Group -->
+            <div class="vg-block">
+                <strong>Volume Group (VG1)</strong>
+                <div style="font-size:0.95em; color:#444; margin-top:4px;">(Combined storage of PV1 & PV2)</div>
+                <div class="lv-row">
+                    <!-- Logical Volumes -->
+                    <div>
+                        <div class="lv-block">Logical Volume 1<br><small>(LV1)</small>
+                            <div class="fs-block">File System<br>/home</div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="lv-block">Logical Volume 2<br><small>(LV2)</small>
+                            <div class="fs-block">File System<br>/var</div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="lv-block">Logical Volume 3<br><small>(LV3)</small>
+                            <div class="fs-block">File System<br>/data</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <h2 style="color:#2d5be3; margin-top:40px;">How LVM Works (Beginner Explanation)</h2>
+        <ul style="font-size:1.08em; line-height:1.7;">
+            <li><b>Physical Volumes (PV):</b> These are the actual hard disks or disk partitions.</li>
+            <li><b>Volume Group (VG):</b> Combines multiple PVs into a single storage pool.</li>
+            <li><b>Logical Volumes (LV):</b> Virtual partitions created from the VG. You can resize them easily.</li>
+            <li><b>File System:</b> Each LV can have its own file system and mount point (like <code>/home</code>, <code>/var</code>, etc).</li>
+        </ul>
+        <p style="color:#444; font-size:1em; margin-top:24px;">
+            <b>Benefits:</b> LVM allows flexible disk management, easy resizing, and combining of storage devices.
+        </p>
+    </div>

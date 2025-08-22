@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Advanced LVM in Linux</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f6f8fa;
+            color: #23272f;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 40px auto;
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 6px 32px rgba(0,0,0,0.10);
+            padding: 40px 36px 32px 36px;
+        }
+        h1, h2 {
+            text-align: center;
+            color: #1e4e79;
+            margin-bottom: 18px;
+        }
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 36px;
+            margin-bottom: 28px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.05em;
+        }
+        .legend-color {
+            width: 28px;
+            height: 18px;
+            border-radius: 5px;
+            display: inline-block;
+        }
+        .pv { background: #4bb3fd; }
+        .pe { background: #a3cef1; }
+        .vg { background: #f9dc5c; }
+        .lv { background: #43aa8b; }
+        .fs { background: #f3722c; }
+        .snap { background: #b5179e; }
+        .mirror { background: #720026; }
+        .diagram {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 36px 0 44px 0;
+        }
+        .disk-row {
+            display: flex;
+            gap: 36px;
+            margin-bottom: 18px;
+        }
+        .block {
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(44,62,80,0.08);
+            padding: 18px 28px;
+            text-align: center;
+            font-weight: 500;
+            font-size: 1.08em;
+        }
+        .pv-block {
+            background: #4bb3fd;
+            color: #fff;
+            min-width: 160px;
+            position: relative;
+        }
+        .pe-block {
+            background: #a3cef1;
+            color: #222;
+            margin-top: 8px;
+            font-size: 0.97em;
+            border-radius: 6px;
+            padding: 6px 0;
+        }
+        .arrow {
+            font-size: 2.2em;
+            color: #bdbdbd;
+            margin: 0 0 0 0;
+            text-align: center;
+        }
+        .vg-block {
+            background: #f9dc5c;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(44,62,80,0.08);
+            padding: 28px 36px;
+            margin-bottom: 22px;
+            min-width: 420px;
+            position: relative;
+        }
+        .vg-title {
+            font-weight: bold;
+            color: #1e4e79;
+            font-size: 1.13em;
+        }
+        .lv-row {
+            display: flex;
+            gap: 36px;
+            justify-content: center;
+            margin-top: 18px;
+        }
+        .lv-block {
+            background: #43aa8b;
+            color: #fff;
+            border-radius: 8px;
+            padding: 18px 26px;
+            min-width: 140px;
+            box-shadow: 0 2px 8px rgba(44,62,80,0.07);
+            position: relative;
+        }
+        .fs-block {
+            background: #f3722c;
+            color: #fff;
+            border-radius: 8px;
+            padding: 8px 16px;
+            margin-top: 10px;
+            font-size: 0.98em;
+            box-shadow: 0 1px 4px rgba(44,62,80,0.07);
+        }
+        .snap-block {
+            background: #b5179e;
+            color: #fff;
+            border-radius: 8px;
+            padding: 7px 14px;
+            margin-top: 10px;
+            font-size: 0.93em;
+            box-shadow: 0 1px 4px rgba(44,62,80,0.07);
+        }
+        .mirror-block {
+            background: #720026;
+            color: #fff;
+            border-radius: 8px;
+            padding: 7px 14px;
+            margin-top: 10px;
+            font-size: 0.93em;
+            box-shadow: 0 1px 4px rgba(44,62,80,0.07);
+        }
+        .cmd-section {
+            margin-top: 48px;
+            background: #f6f8fa;
+            border-radius: 10px;
+            padding: 32px 24px;
+            box-shadow: 0 2px 10px rgba(44,62,80,0.06);
+        }
+        .cmd-section h2 {
+            color: #1e4e79;
+            margin-bottom: 18px;
+        }
+        .cmd-list {
+            font-size: 1.08em;
+            line-height: 1.8;
+            margin-bottom: 0;
+        }
+        .cmd-list code {
+            background: #e9ecef;
+            color: #b5179e;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.98em;
+        }
+        .cmd-example {
+            background: #23272f;
+            color: #f9dc5c;
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-size: 1em;
+            margin: 8px 0 18px 0;
+            font-family: 'Fira Mono', 'Consolas', monospace;
+            overflow-x: auto;
+        }
+        @media (max-width: 900px) {
+            .container { padding: 18px 4vw; }
+            .disk-row, .lv-row { flex-direction: column; gap: 16px; }
+            .vg-block { min-width: unset; padding: 16px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Advanced LVM in Linux</h1>
+        <div class="legend">
+            <div class="legend-item"><span class="legend-color pv"></span>Physical Volume (PV)</div>
+            <div class="legend-item"><span class="legend-color pe"></span>Physical Extent (PE)</div>
+            <div class="legend-item"><span class="legend-color vg"></span>Volume Group (VG)</div>
+            <div class="legend-item"><span class="legend-color lv"></span>Logical Volume (LV)</div>
+            <div class="legend-item"><span class="legend-color fs"></span>File System</div>
+            <div class="legend-item"><span class="legend-color snap"></span>Snapshot</div>
+            <div class="legend-item"><span class="legend-color mirror"></span>Mirror</div>
+        </div>
+        <div class="diagram">
+            <!-- Physical Volumes -->
+            <div class="disk-row">
+                <div class="block pv-block">
+                    PV1<br><small>/dev/sda1</small>
+                    <div class="pe-block">PEs: 0-499</div>
+                </div>
+                <div class="block pv-block">
+                    PV2<br><small>/dev/sdb1</small>
+                    <div class="pe-block">PEs: 0-499</div>
+                </div>
+                <div class="block pv-block">
+                    PV3<br><small>/dev/sdc1</small>
+                    <div class="pe-block">PEs: 0-499</div>
+                </div>
+            </div>
+            <div class="arrow">&#8595;</div>
+            <!-- Volume Group -->
+            <div class="vg-block">
+                <div class="vg-title">Volume Group: <b>vg_data</b></div>
+                <div style="font-size:0.98em; color:#444; margin-top:4px;">
+                    (Combined storage of PV1, PV2, PV3; PEs pooled)
+                </div>
+                <div class="lv-row">
+                    <!-- Logical Volumes -->
+                    <div>
+                        <div class="lv-block">
+                            LV: <b>lv_home</b><br><small>Size: 400G</small>
+                            <div class="fs-block">File System<br>/home (ext4)</div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="lv-block">
+                            LV: <b>lv_var</b><br><small>Size: 200G</small>
+                            <div class="fs-block">File System<br>/var (xfs)</div>
+                            <div class="snap-block">Snapshot: lv_var_snap</div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="lv-block">
+                            LV: <b>lv_data</b><br><small>Size: 600G</small>
+                            <div class="fs-block">File System<br>/data (xfs)</div>
+                            <div class="mirror-block">Mirrored</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <h2>Advanced LVM Concepts</h2>
+        <ul style="font-size:1.09em; line-height:1.7;">
+            <li><b>Physical Extents (PE):</b> Fixed-size chunks (e.g., 4MB) that make up PVs and are allocated to LVs.</li>
+            <li><b>Snapshots:</b> Read-only or read-write copies of LVs for backup or testing.</li>
+            <li><b>Mirroring:</b> LVs can be mirrored across PVs for redundancy.</li>
+            <li><b>Resizing:</b> LVs and VGs can be expanded or reduced online.</li>
+            <li><b>Thin Provisioning:</b> Allocate storage on-demand, not all at once.</li>
+        </ul>
+        <div class="cmd-section">
+            <h2>Key LVM Commands (with Examples)</h2>
+            <ol class="cmd-list">
+                <li>
+                    <b>Initialize Physical Volumes:</b>
+                    <div class="cmd-example">
+                        pvcreate /dev/sda1 /dev/sdb1 /dev/sdc1
+                    </div>
+                </li>
+                <li>
+                    <b>Create a Volume Group:</b>
+                    <div class="cmd-example">
+                        vgcreate vg_data /dev/sda1 /dev/sdb1 /dev/sdc1
+                    </div>
+                </li>
+                <li>
+                    <b>Create Logical Volumes:</b>
+                    <div class="cmd-example">
+                        lvcreate -L 400G -n lv_home vg_data<br>
+                        lvcreate -L 200G -n lv_var vg_data<br>
+                        lvcreate -L 600G -n lv_data vg_data --type mirror --mirrors 1
+                    </div>
+                </li>
+                <li>
+                    <b>Create File Systems:</b>
+                    <div class="cmd-example">
+                        mkfs.ext4 /dev/vg_data/lv_home<br>
+                        mkfs.xfs /dev/vg_data/lv_var<br>
+                        mkfs.xfs /dev/vg_data/lv_data
+                    </div>
+                </li>
+                <li>
+                    <b>Mount Logical Volumes:</b>
+                    <div class="cmd-example">
+                        mount /dev/vg_data/lv_home /home<br>
+                        mount /dev/vg_data/lv_var /var<br>
+                        mount /dev/vg_data/lv_data /data
+                    </div>
+                </li>
+                <li>
+                    <b>Create a Snapshot:</b>
+                    <div class="cmd-example">
+                        lvcreate -L 10G -s -n lv_var_snap /dev/vg_data/lv_var
+                    </div>
+                </li>
+                <li>
+                    <b>Extend a Logical Volume (Online):</b>
+                    <div class="cmd-example">
+                        lvextend -L +100G /dev/vg_data/lv_data<br>
+                        xfs_growfs /data
+                    </div>
+                </li>
+                <li>
+                    <b>Reduce a Logical Volume (with caution):</b>
+                    <div class="cmd-example">
+                        umount /data<br>
+                        e2fsck -f /dev/vg_data/lv_data<br>
+                        resize2fs /dev/vg_data/lv_data 500G<br>
+                        lvreduce -L 500G /dev/vg_data/lv_data
+                    </div>
+                </li>
+                <li>
+                    <b>Display LVM Layout:</b>
+                    <div class="cmd-example">
+                        pvs<br>
+                        vgs<br>
+                        lvs
+                    </div>
+                </li>
+            </ol>
+        </div>
+        <p style="color:#444; font-size:1.07em; margin-top:32px;">
+            <b>Tip:</b> Always backup data before resizing or reducing LVs. LVM enables advanced storage management, snapshots, and redundancy for enterprise Linux systems.
+        </p>

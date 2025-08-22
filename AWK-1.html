@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The awk Command: A Data Processing Powerhouse</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F7FAFC; /* Light Gray */
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .flow-box {
+            border: 2px solid #2B6CB0; /* Darker Blue */
+            background-color: #DBEAFE; /* Lighter Blue */
+            color: #1A202C; /* Dark Gray */
+            padding: 0.75rem 1.25rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        .flow-arrow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: #4299E1; /* Primary Blue */
+            margin: 0 0.5rem;
+        }
+        .code-block {
+            background-color: #1A202C; /* Darkest Gray */
+            color: #F7FAFC; /* Light Gray */
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-family: monospace;
+            white-space: pre-wrap;
+            overflow-x: auto;
+        }
+        .table-header {
+            background-color: #2D3748; /* Dark Gray */
+            color: #FFFFFF;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <div class="container mx-auto p-4 md:p-8">
+
+        <header class="text-center mb-12">
+            <h1 class="text-5xl md:text-7xl font-black text-gray-800 mb-2">The <span style="color: #4299E1;">awk</span> Command</h1>
+            <p class="text-xl md:text-2xl text-gray-600">A Data Processing Powerhouse for Linux</p>
+        </header>
+
+        <section id="introduction" class="mb-16 bg-white p-8 rounded-lg shadow-lg">
+            <h2 class="text-3xl font-bold text-center mb-6">🎯 What is `awk`?</h2>
+            <p class="text-lg text-gray-700 leading-relaxed text-center max-w-4xl mx-auto">
+                `awk` is a powerful pattern-scanning and processing language. It's designed for text manipulation, particularly for extracting and reporting data from files. Unlike simpler tools, `awk` excels at handling structured text, breaking it down into records (lines) and fields (columns) and applying actions based on specified patterns. It's a fundamental utility for data analysis and reporting in Unix-like systems.
+            </p>
+        </section>
+
+        <section id="core-concepts" class="mb-16">
+            <h2 class="text-3xl font-bold text-center mb-8">💡 Core Concepts: Records & Fields</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow-md flex flex-col items-center justify-center">
+                    <p class="text-5xl mb-4">📄</p>
+                    <h3 class="text-xl font-bold mb-2">Records (Lines)</h3>
+                    <p class="text-gray-600 text-center">By default, `awk` processes input line by line. Each line is considered a "record."</p>
+                    <div class="code-block text-sm mt-4 w-full">
+                        Line 1: Data A B C<br>
+                        Line 2: Data X Y Z<br>
+                        Line 3: Another Line
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md flex flex-col items-center justify-center">
+                    <p class="text-5xl mb-4">📊</p>
+                    <h3 class="text-xl font-bold mb-2">Fields (Columns)</h3>
+                    <p class="text-gray-600 text-center">Each record is automatically split into "fields" based on a delimiter (default is whitespace).</p>
+                    <div class="code-block text-sm mt-4 w-full">
+                        $1: Data &nbsp; $2: A &nbsp; $3: B &nbsp; $4: C
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white p-8 rounded-lg shadow-lg mt-8">
+                <h3 class="text-2xl font-bold text-center mb-4">The `Pattern { Action }` Model</h3>
+                <div class="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-4">
+                    <div class="flow-box">Read Input Record</div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-box text-blue-700 bg-blue-100 border-blue-400">Match Pattern?</div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-box text-green-700 bg-green-100 border-green-400">Execute Action</div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-box">Next Record</div>
+                </div>
+                <p class="text-center text-gray-600 mt-6">`awk` iterates through each record, checks if it matches a specified `pattern`, and if so, executes the associated `action`. If no pattern is given, the action is performed for every record.</p>
+            </div>
+        </section>
+
+        <section id="built-in-variables" class="mb-16">
+            <h2 class="text-3xl font-bold text-center mb-8">🧮 Essential Built-in Variables</h2>
+            <p class="text-center text-gray-600 mb-8 max-w-3xl mx-auto">`awk` provides several powerful built-in variables that give you access to information about the current record, fields, and the input file itself.</p>
+            <div class="overflow-x-auto bg-white p-6 rounded-lg shadow-md">
+                <table class="w-full text-sm text-left">
+                    <thead class="table-header">
+                        <tr><th class="p-3">Variable</th><th class="p-3">Description</th><th class="p-3">Example Usage</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-b"><td class="p-3 font-mono">`$0`</td><td class="p-3">The entire current record.</td><td class="p-3 font-mono">`awk '{print $0}' file`</td></tr>
+                        <tr class="border-b"><td class="p-3 font-mono">`$1, $2, ...`</td><td class="p-3">The first, second, etc., field of the current record.</td><td class="p-3 font-mono">`awk '{print $1, $3}' file`</td></tr>
+                        <tr class="border-b"><td class="p-3 font-mono">`NR`</td><td class="p-3">Current record number (line number).</td><td class="p-3 font-mono">`awk '{print NR, $0}' file`</td></tr>
+                        <tr class="border-b"><td class="p-3 font-mono">`NF`</td><td class="p-3">Number of fields in the current record.</td><td class="p-3 font-mono">`awk '{print NF}' file`</td></tr>
+                        <tr class="border-b"><td class="p-3 font-mono">`FILENAME`</td><td class="p-3">The name of the current input file.</td><td class="p-3 font-mono">`awk '{print FILENAME}' file`</td></tr>
+                        <tr class="border-b"><td class="p-3 font-mono">`FS`</td><td class="p-3">Field Separator (default: whitespace).</td><td class="p-3 font-mono">`awk -F':' '{print $1}' /etc/passwd`</td></tr>
+                        <tr class="border-b"><td class="p-3 font-mono">`RS`</td><td class="p-3">Record Separator (default: newline).</td><td class="p-3 font-mono">`awk 'BEGIN{RS="."}{print}' file`</td></tr>
+                        <tr class="border-b"><td class="p-3 font-mono">`OFS`</td><td class="p-3">Output Field Separator (default: space).</td><td class="p-3 font-mono">`awk 'BEGIN{OFS=","}{print $1,$2}' file`</td></tr>
+                        <tr><td class="p-3 font-mono">`ORS`</td><td class="p-3">Output Record Separator (default: newline).</td><td class="p-3 font-mono">`awk 'BEGIN{ORS="---"}{print}' file`</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="common-commands" class="mb-16">
+            <h2 class="text-3xl font-bold text-center mb-8">🛠️ Widely Used Commands & Actions</h2>
+            <p class="text-center text-gray-600 mb-8 max-w-3xl mx-auto">These are the actions you'll most frequently perform within `awk`'s powerful `Pattern { Action }` structure.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-2xl font-bold mb-4 text-blue-600">`print` Statement</h3>
+                    <p class="mb-4 text-gray-600">Displays fields, variables, or custom strings. It's the most common action used to output data.</p>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left">
+                            <thead class="table-header">
+                                <tr><th class="p-2">Example</th><th class="p-2">Description</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b"><td class="p-2 font-mono">`awk '{print $1}' file`</td><td class="p-2">Prints the first field of each line.</td></tr>
+                                <tr class="border-b"><td class="p-2 font-mono">`awk '{print "Line:", NR, $0}' file`</td><td class="p-2">Adds "Line:" before each record number.</td></tr>
+                                <tr><td class="p-2 font-mono">`awk '{print $NF}' file`</td><td class="p-2">Prints the last field of each line.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-2xl font-bold mb-4 text-teal-600">Conditionals (`if/else`)</h3>
+                    <p class="mb-4 text-gray-600">Execute actions only if a specified condition is true. Essential for filtering and selective processing.</p>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left">
+                            <thead class="table-header">
+                                <tr><th class="p-2">Example</th><th class="p-2">Description</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b"><td class="p-2 font-mono">`awk '{if ($3 > 10) print $0}' file`</td><td class="p-2">Prints lines where the 3rd field is > 10.</td></tr>
+                                <tr class="border-b"><td class="p-2 font-mono">`awk '{if ($1 == "error") print}' log`</td><td class="p-2">Prints lines starting with "error".</td></tr>
+                                <tr><td class="p-2 font-mono">`awk '{if(NR % 2 == 0) print}' file`</td><td class="p-2">Prints even-numbered lines.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-2xl font-bold mb-4 text-orange-500">Loops (`for`, `while`)</h3>
+                    <p class="mb-4 text-gray-600">Iterate over fields or perform repetitive tasks within an action block.</p>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left">
+                            <thead class="table-header">
+                                <tr><th class="p-2">Example</th><th class="p-2">Description</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b"><td class="p-2 font-mono">`awk '{for (i=1; i<=NF; i++) print $i}' file`</td><td class="p-2">Prints each field on a new line.</td></tr>
+                                <tr><td class="p-2 font-mono">`awk '{i=1; while (i<=NF) {print $i; i++}}' file`</td><td class="p-2">Same as above, using a while loop.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-2xl font-bold mb-4 text-pink-500">`BEGIN` and `END` Blocks</h3>
+                    <p class="mb-4 text-gray-600">Special patterns that execute code before (`BEGIN`) or after (`END`) `awk` processes any input records. Great for initialization or final summaries.</p>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left">
+                            <thead class="table-header">
+                                <tr><th class="p-2">Example</th><th class="p-2">Description</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b"><td class="p-2 font-mono">`awk 'BEGIN{print "Header"}{print $0}END{print "Footer"}' file`</td><td class="p-2">Adds header before and footer after file content.</td></tr>
+                                <tr><td class="p-2 font-mono">`awk 'END{print NR, "lines processed"}' file`</td><td class="p-2">Prints total lines after processing.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="awk-vs-others" class="mb-16 bg-white p-8 rounded-lg shadow-lg">
+            <h2 class="text-3xl font-bold text-center mb-8">📊 `awk`'s Niche: Beyond Simple Tools</h2>
+            <p class="text-center text-gray-600 mb-8 max-w-3xl mx-auto">While `grep` excels at searching and `cut` at column extraction, `awk`'s true strength lies in its ability to combine pattern matching with complex data manipulation, making it ideal for structured data analysis and reporting.</p>
+            <div class="chart-container mb-12">
+                <canvas id="awkVersatilityChart"></canvas>
+            </div>
+        </section>
+
+        <section id="advanced-features" class="mb-16">
+            <h2 class="text-3xl font-bold text-center mb-8">🧠 Advanced `awk` Features</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-2xl font-bold mb-4">Arrays</h3>
+                    <p class="mb-4 text-gray-600">`awk` supports associative arrays, which are incredibly useful for counting occurrences, summing values, or storing unique elements based on a key.</p>
+                    <p class="font-semibold">Example: Count word occurrences</p>
+                    <div class="my-2">
+                        <code class="code-block text-sm">
+                            awk '{for (i=1; i<=NF; i++) count[$i]++} END{for (word in count) print word, count[word]}' file.txt
+                        </code>
+                        <p class="text-sm text-gray-500 mt-1">This script counts the frequency of each word in a file.</p>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-2xl font-bold mb-4">User-Defined Functions</h3>
+                    <p class="mb-4 text-gray-600">For more complex or reusable logic, you can define your own functions within an `awk` script, making your code modular and readable.</p>
+                    <p class="font-semibold">Example: Simple custom function</p>
+                    <div class="my-2">
+                        <code class="code-block text-sm">
+                            awk '
+                            function greet(name) {
+                                return "Hello, " name "!"
+                            }
+                            BEGIN {
+                                print greet("World")
+                            }'
+                        </code>
+                        <p class="text-sm text-gray-500 mt-1">Defines and calls a simple greeting function.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="tips" class="bg-gray-800 text-white p-8 rounded-lg shadow-lg">
+            <h2 class="text-3xl font-bold text-center mb-6">💡 `awk` Best Practices</h2>
+            <ul class="list-disc list-inside max-w-2xl mx-auto space-y-3">
+                <li><strong>Use `-F` for Delimiters:</strong> Always explicitly set the field separator using `-F` (e.g., `-F','` for CSV) to ensure correct parsing.</li>
+                <li><strong>Quote Your Scripts:</strong> Enclose `awk` scripts in single quotes (`'...'`) to prevent shell expansion issues.</li>
+                <li><strong>Start Simple:</strong> Begin with basic `print` statements and gradually add patterns and more complex actions.</li>
+                <li><strong>Read the Manual:</strong> The `man awk` page is an invaluable resource for detailed information and advanced features.</li>
+            </ul>
+        </section>
+
+        <footer class="text-center mt-12 text-gray-500">
+            <p>✨ Master `awk` to unlock powerful text processing capabilities! ✨</p>
+        </footer>
+
+    </div>
+
+    <script>
+        const wrapLabel = (label, maxLength = 16) => {
+            if (label.length <= maxLength) {
+                return label;
+            }
+            const words = label.split(' ');
+            const lines = [];
+            let currentLine = '';
+            for (const word of words) {
+                if ((currentLine + ' ' + word).trim().length > maxLength) {
+                    lines.push(currentLine.trim());
+                    currentLine = word;
+                } else {
+                    currentLine = (currentLine + ' ' + word).trim();
+                }
+            }
+            if (currentLine) {
+                lines.push(currentLine.trim());
+            }
+            return lines;
+        };
+        
+        const tooltipTitleCallback = (tooltipItems) => {
+            const item = tooltipItems[0];
+            let label = item.chart.data.labels[item.dataIndex];
+            if (Array.isArray(label)) {
+                return label.join(' ');
+            }
+            return label;
+        };
+
+        const awkVersatilityCtx = document.getElementById('awkVersatilityChart').getContext('2d');
+        new Chart(awkVersatilityCtx, {
+            type: 'bar',
+            data: {
+                labels: [
+                    wrapLabel('Simple Search (grep)'),
+                    wrapLabel('Column Extraction (cut)'),
+                    wrapLabel('Basic Filtering (sed)'),
+                    wrapLabel('Complex Data Transformation (awk)'),
+                    wrapLabel('Data Aggregation (awk)')
+                ],
+                datasets: [{
+                    label: 'Suitability/Power',
+                    data: [70, 60, 50, 95, 90],
+                    backgroundColor: [
+                        '#4FD1C5', /* Teal */
+                        '#F6AD55', /* Orange */
+                        '#ED64A6', /* Pink */
+                        '#4299E1', /* Primary Blue */
+                        '#2B6CB0'  /* Darker Blue */
+                    ],
+                    borderColor: [
+                        '#319795',
+                        '#B7791F',
+                        '#B83280',
+                        '#2B6CB0',
+                        '#1A202C'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: 'y',
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        max: 100,
+                        grid: {
+                            color: '#E2E8F0'
+                        },
+                        ticks: {
+                           color: '#4A5568'
+                        }
+                    },
+                    y: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                           color: '#2D3748',
+                           font: {
+                               weight: '600'
+                           }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            title: tooltipTitleCallback
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>

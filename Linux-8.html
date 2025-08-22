@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linux Basic Commands - System Monitoring</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .corporate-blue-dark {
+            background-color: #2a64ad;
+        }
+        .table-header {
+            background-color: #e0e7ff; /* Light blue for header */
+        }
+        .table-row:nth-child(odd) {
+            background-color: #f8faff; /* Very light blue for odd rows */
+        }
+    </style>
+</head>
+<body class="flex justify-center items-center h-screen bg-gray-100 p-4">
+    <div class="relative w-[50.625vh] h-[90vh] bg-white shadow-xl rounded-xl overflow-hidden flex flex-col p-8">
+        <!-- Header -->
+        <div class="corporate-blue-dark text-white p-6 rounded-t-lg mb-6 -mx-8 -mt-8">
+            <h2 class="text-3xl font-bold text-center">Process & System Monitoring</h2>
+        </div>
+
+        <!-- Content Area - Table -->
+        <div class="flex-grow px-4 overflow-auto">
+            <table class="w-full text-left text-gray-700 rounded-lg overflow-hidden">
+                <thead>
+                    <tr class="table-header text-blue-800 text-lg">
+                        <th class="p-3 font-semibold">Command</th>
+                        <th class="p-3 font-semibold">Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="table-row">
+                        <td class="p-3 font-mono">top</td>
+                        <td class="p-3">Display dynamic real-time view of running processes</td>
+                    </tr>
+                    <tr class="table-row">
+                        <td class="p-3 font-mono">ps</td>
+                        <td class="p-3">View current running processes</td>
+                    </tr>
+                    
+                    <tr class="table-row">
+                        <td class="p-3 font-mono">df -h</td>
+                        <td class="p-3">Report disk space usage of file systems</td>
+                    </tr>
+                    <tr class="table-row">
+                        <td class="p-3 font-mono">free -m</td>
+                        <td class="p-3">Display amount of free and used memory in the system</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

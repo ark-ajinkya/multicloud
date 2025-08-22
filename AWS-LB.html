@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS Load Balancers Mind Map</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #e3f2fd; /* Light Blue Background */
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .mindmap-container {
+            background-color: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+            padding: 40px;
+            max-width: 1300px;
+            width: 100%;
+            margin-top: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        .node {
+            transition: all 0.3s ease-in-out;
+            margin-bottom: 15px;
+            padding: 12px 20px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column; /* Stack name and info */
+            align-items: flex-start;
+            font-weight: 600;
+            position: relative;
+        }
+        .node-name {
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        .node-level-0 {
+            background-color: #ff6f61; /* Vibrant Coral */
+            color: white;
+            font-size: 2.2rem;
+            padding: 25px 35px;
+            border-radius: 18px;
+            text-align: center;
+            margin-bottom: 40px;
+            box-shadow: 0 8px 20px rgba(255, 111, 97, 0.4);
+            display: block;
+            width: fit-content; /* Adjust width to content */
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .node-level-1 {
+            background-color: #ff9a8d; /* Lighter Coral */
+            color: #333;
+            font-size: 1.6rem;
+            padding: 18px 25px;
+            border-radius: 14px;
+            box-shadow: 0 5px 15px rgba(255, 154, 141, 0.3);
+            margin-left: 30px;
+        }
+        .node-level-2 {
+            background-color: #ffc2b4; /* Even Lighter Coral */
+            color: #444;
+            font-size: 1.2rem;
+            padding: 15px 22px;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(255, 194, 180, 0.2);
+            margin-left: 60px;
+        }
+        .node-level-3 {
+            background-color: #ffe0d5; /* Pale Coral */
+            color: #555;
+            font-size: 1.1rem;
+            padding: 12px 18px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(255, 224, 213, 0.15);
+            margin-left: 90px;
+        }
+        .node-info {
+            background-color: rgba(255, 255, 255, 0.7); /* Slightly transparent white for info */
+            color: #333;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-top: 8px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+            width: 100%; /* Ensure info takes full width of its parent node */
+            box-sizing: border-box;
+        }
+        .children-container {
+            padding-left: 30px;
+            border-left: 3px solid #ffcc00; /* Vibrant Yellow line */
+            margin-left: 15px;
+            margin-top: 15px;
+        }
+        .svg-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .connection-line {
+            stroke: #ffcc00; /* Vibrant Yellow for lines */
+            stroke-width: 3;
+            fill: none;
+            stroke-linecap: round;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .node-level-0 {
+                font-size: 1.8rem;
+                padding: 20px 25px;
+            }
+            .node-level-1 {
+                font-size: 1.4rem;
+                padding: 15px 20px;
+                margin-left: 15px;
+            }
+            .node-level-2 {
+                font-size: 1.1rem;
+                padding: 12px 18px;
+                margin-left: 30px;
+            }
+            .node-level-3 {
+                font-size: 1rem;
+                padding: 10px 15px;
+                margin-left: 45px;
+            }
+            .node-info {
+                font-size: 0.85rem;
+            }
+            .children-container {
+                padding-left: 20px;
+                margin-left: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="mindmap" class="mindmap-container">
+        <svg id="mindmap-svg" class="svg-container"></svg>
+    </div>
+
+    <script>
+        // Define the mind map data structure
+        const mindMapData = {
+            id: 'elb',
+            name: 'AWS Elastic Load Balancing (ELB)',
+            info: 'Automatically distributes incoming application traffic across multiple targets, such as EC2 instances, containers, IP addresses, and Lambda functions. Improves application availability and scalability. Benefits: High Availability, Automatic Scaling, Health Checks, Security Features (SSL/TLS termination, integration with AWS WAF).',
+            children: [
+                {
+                    id: 'alb',
+                    name: 'Application Load Balancer (ALB)',
+                    info: 'Layer: Operates at the application layer (Layer 7 of the OSI model). Use Cases: Ideal for HTTP/HTTPS traffic, microservices, and container-based applications. Key Features: Path-based routing, Host-based routing, Query string and header-based routing, Target Groups, Sticky Sessions, TLS Termination, Integration with AWS WAF, Amazon ECS, AWS Lambda.',
+                    children: []
+                },
+                {
+                    id: 'nlb',
+                    name: 'Network Load Balancer (NLB)',
+                    info: 'Layer: Operates at the transport layer (Layer 4 of the OSI model). Use Cases: Ideal for extreme performance, static IP addresses, and ultra-low latency. Handles millions of requests per second. Key Features: High Performance, Static IP Addresses, Elastic IP Support, Preserves Client IP, TCP, UDP, and TLS Listeners, Target Types (IP addresses and EC2 instances), Health Checks.',
+                    children: []
+                },
+                {
+                    id: 'glb',
+                    name: 'Gateway Load Balancer (GLB)',
+                    info: 'Layer: Operates at Layer 3 (Network Layer). Use Cases: Used to deploy, scale, and manage virtual appliances such as firewalls, intrusion detection/prevention systems, and deep packet inspection systems. Key Features: Transparent Network Gateway, GENEVE Protocol, High Availability & Scalability, Centralized Management, Single Entry/Exit Point.',
+                    children: []
+                },
+                {
+                    id: 'clb',
+                    name: 'Classic Load Balancer (CLB)',
+                    info: 'Layer: Operates at both Layer 4 and Layer 7. Use Cases: Legacy load balancer. AWS recommends using ALB or NLB for new applications. Key Features (Limited compared to ALB/NLB): Supports HTTP, HTTPS, TCP, and SSL. Basic health checks. Sticky sessions. Can be configured for both request routing (Layer 7) and connection forwarding (Layer 4). Note: This is an older generation load balancer.',
+                    children: []
+                },
+                {
+                    id: 'common-features',
+                    name: 'Common Features Across ELB Types',
+                    info: 'Health Checks: Monitors the health of registered instances and routes traffic only to healthy instances. Monitoring: Integrates with Amazon CloudWatch for metrics and logs. Logging: Provides access logs for detailed request information. Security: Integrates with AWS IAM for access control. Cross-Zone Load Balancing: Distributes traffic evenly across Availability Zones. SSL/TLS Termination: Offloads SSL/TLS processing from backend instances (ALB, CLB).',
+                    children: []
+                }
+            ]
+        };
+
+        const mindmapContainer = document.getElementById('mindmap');
+        const mindmapSvg = document.getElementById('mindmap-svg');
+        let nodeElements = {}; // Store references to rendered node elements for SVG drawing
+
+        /**
+         * Renders a single node and its children recursively.
+         * @param {Object} nodeData - The data for the current node.
+         * @param {HTMLElement} parentElement - The DOM element to append the node to.
+         * @param {number} level - The current depth level of the node (0 for root).
+         */
+        function renderNode(nodeData, parentElement, level) {
+            // Create the main node element
+            const nodeDiv = document.createElement('div');
+            nodeDiv.id = `node-${nodeData.id}`; // Unique ID for each node
+            nodeDiv.classList.add('node', `node-level-${level}`, 'relative');
+            nodeDiv.innerHTML = `<span class="node-name">${nodeData.name}</span>`;
+            parentElement.appendChild(nodeDiv);
+            nodeElements[nodeData.id] = nodeDiv; // Store reference
+
+            // Create the info div (always expanded)
+            const infoDiv = document.createElement('div');
+            infoDiv.classList.add('node-info');
+            infoDiv.textContent = nodeData.info;
+            nodeDiv.appendChild(infoDiv);
+
+            // Create container for children (always expanded)
+            if (nodeData.children && nodeData.children.length > 0) {
+                const childrenContainer = document.createElement('div');
+                childrenContainer.classList.add('children-container'); // No 'collapsed' class
+                parentElement.appendChild(childrenContainer);
+                nodeElements[`children-of-${nodeData.id}`] = childrenContainer; // Store reference for children container
+
+                // Recursively render children
+                nodeData.children.forEach(child => {
+                    renderNode(child, childrenContainer, level + 1);
+                });
+            }
+        }
+
+        /**
+         * Draws SVG lines connecting parent nodes to their children.
+         */
+        function drawLines() {
+            mindmapSvg.innerHTML = ''; // Clear existing lines
+            const containerRect = mindmapContainer.getBoundingClientRect();
+
+            function getRightEdge(element) {
+                const rect = element.getBoundingClientRect();
+                return {
+                    x: rect.right - containerRect.left,
+                    y: rect.top + rect.height / 2 - containerRect.top
+                };
+            }
+
+            function getLeftEdge(element) {
+                const rect = element.getBoundingClientRect();
+                return {
+                    x: rect.left - containerRect.left,
+                    y: rect.top + rect.height / 2 - containerRect.top
+                };
+            }
+
+            // Function to draw a line
+            function createLine(x1, y1, x2, y2) {
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                // Use a curved path for better visual separation
+                const midX = (x1 + x2) / 2;
+                const pathData = `M ${x1} ${y1} C ${midX} ${y1}, ${midX} ${y2}, ${x2} ${y2}`;
+                line.setAttribute('d', pathData);
+                line.classList.add('connection-line');
+                mindmapSvg.appendChild(line);
+            }
+
+            // Iterate through all nodes to draw connections
+            for (const nodeId in nodeElements) {
+                if (nodeId.startsWith('node-')) {
+                    const nodeDiv = nodeElements[nodeId];
+                    const nodeData = getNodeDataById(nodeId.replace('node-', ''));
+
+                    if (nodeData && nodeData.children && nodeData.children.length > 0) {
+                        // Children are always visible in this non-interactive version
+                        const parentPos = getRightEdge(nodeDiv); // Start from right edge of parent
+
+                        nodeData.children.forEach(childData => {
+                            const childNodeDiv = nodeElements[`node-${childData.id}`];
+                            if (childNodeDiv) {
+                                const childPos = getLeftEdge(childNodeDiv); // End at left edge of child
+                                createLine(parentPos.x, parentPos.y, childPos.x, childPos.y);
+                            }
+                        });
+                    }
+                }
+            }
+        }
+
+        /**
+         * Helper function to find node data by ID.
+         * @param {string} id - The ID of the node to find.
+         * @param {Object} currentData - The current node data to search within.
+         * @returns {Object|null} The found node data or null.
+         */
+        function getNodeDataById(id, currentData = mindMapData) {
+            if (currentData.id === id) {
+                return currentData;
+            }
+            if (currentData.children) {
+                for (const child of currentData.children) {
+                    const found = getNodeDataById(id, child);
+                    if (found) {
+                        return found;
+                    }
+                }
+            }
+            return null;
+            }
+
+        // Initial rendering of the mind map
+        window.onload = function() {
+            renderNode(mindMapData, mindmapContainer, 0);
+            // Draw lines after initial render
+            drawLines();
+        };
+
+        // Redraw lines on window resize
+        window.addEventListener('resize', () => {
+            // Debounce resize events for performance
+            clearTimeout(window.resizeTimer);
+            window.resizeTimer = setTimeout(drawLines, 200);
+        });
+    </script>
+</body>
+</html>

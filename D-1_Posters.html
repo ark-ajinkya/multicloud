@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mastering the Shell: Introduction</title>
+    <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
+    <link rel="preconnect" href="[https://fonts.googleapis.com](https://fonts.googleapis.com)">
+    <link rel="preconnect" href="[https://fonts.gstatic.com](https://fonts.gstatic.com)" crossorigin>
+    <link href="[https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap](https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap)" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F3D4;
+            color: #2D3748;
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen p-6">
+    <div class="bg-white rounded-lg shadow-xl p-8 md:p-12 max-w-2xl w-full text-center">
+        <h1 class="text-4xl md:text-5xl font-black tracking-tighter text-[#F6416C] mb-4">
+            Mastering the Shell
+        </h1>
+        <p class="text-xl md:text-2xl font-semibold text-[#00B8A9] mb-8">
+            Unlock the Power of Your System with the Command Line!
+        </p>
+        
+        <div class="space-y-6 mb-8">
+            <div class="flex items-center justify-center space-x-4">
+                <span class="text-5xl">🚀</span>
+                <p class="text-lg md:text-xl font-bold text-[#2D3748]">Efficiency: Automate repetitive tasks.</p>
+            </div>
+            <div class="flex items-center justify-center space-x-4">
+                <span class="text-5xl">🎯</span>
+                <p class="text-lg md:text-xl font-bold text-[#2D3748]">Control: Fine-grained system interaction.</p>
+            </div>
+            <div class="flex items-center justify-center space-x-4">
+                <span class="text-5xl">🛠️</span>
+                <p class="text-lg md:text-xl font-bold text-[#2D3748]">Troubleshooting: Diagnose issues effectively.</p>
+            </div>
+            <div class="flex items-center justify-center space-x-4">
+                <span class="text-5xl">💡</span>
+                <p class="text-lg md:text-xl font-bold text-[#2D3748]">Development: A core skill for pros.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+```
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accessing the Shell Prompt</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F3D4;
+            color: #2D3748;
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen p-6">
+    <div class="bg-white rounded-lg shadow-xl p-8 md:p-12 max-w-2xl w-full text-center">
+        <h1 class="text-4xl md:text-5xl font-black tracking-tighter text-[#F6416C] mb-4">
+            Your Gateway to System Control
+        </h1>
+        <p class="text-xl md:text-2xl font-semibold text-[#00B8A9] mb-8">
+            Accessing the Shell Prompt
+        </p>
+        
+        <div class="space-y-8 mb-8">
+            <div class="bg-[#FFDE7D] p-6 rounded-lg shadow-md">
+                <h3 class="text-2xl font-bold text-[#2D3748] mb-2">Terminal or Console</h3>
+                <p class="text-lg md:text-xl text-[#2D3748]">
+                    The primary interface for interacting with the shell.
+                </p>
+                <ul class="list-disc list-inside text-left mt-4 text-base md:text-lg">
+                    <li>Windows: PowerShell, Command Prompt, WSL</li>
+                    <li>macOS/Linux: Terminal application</li>
+                </ul>
+            </div>
+            
+            <div class="bg-[#00B8A9] p-6 rounded-lg shadow-md">
+                <h3 class="text-2xl font-bold text-white mb-2">Common Shell Environments</h3>
+                <ul class="list-disc list-inside text-left mt-4 text-base md:text-lg text-white">
+                    <li><span class="font-bold">Bash:</span> Most widely used default (Linux/macOS).</li>
+                    <li><span class="font-bold">Zsh:</span> Popular for features & customization.</li>
+                    <li><span class="font-bold">Fish:</span> Known for user-friendly features.</li>
+                </ul>
+            </div>
+        </div>
+        
+        <p class="text-lg md:text-xl text-[#2D3748]">
+            Start typing commands and take control!
+        </p>
+    </div>
+</body>
+</html>
+```
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basic Command Structure</title>
+    <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
+    <link rel="preconnect" href="[https://fonts.googleapis.com](https://fonts.googleapis.com)">
+    <link rel="preconnect" href="[https://fonts.gstatic.com](https://fonts.gstatic.com)" crossorigin>
+    <link href="[https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap](https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap)" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F3D4;
+            color: #2D3748;
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen p-6">
+    <div class="bg-white rounded-lg shadow-xl p-8 md:p-12 max-w-2xl w-full text-center">
+        <h1 class="text-4xl md:text-5xl font-black tracking-tighter text-[#F6416C] mb-4">
+            Basic Command Structure
+        </h1>
+        <p class="text-xl md:text-2xl font-semibold text-[#00B8A9] mb-8">
+            Understanding the Building Blocks
+        </p>
+        
+        <div class="bg-[#FFDE7D] p-6 rounded-lg shadow-md mb-8">
+            <p class="text-2xl md:text-3xl font-mono font-bold text-[#2D3748]">
+                command <span class="text-[#F6416C]">[options]</span> <span class="text-[#00B8A9]">[arguments]</span>
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="p-4 rounded-lg bg-red-50">
+                <span class="text-4xl">⚙️</span>
+                <h3 class="text-xl font-bold text-[#F6416C] mt-2">Command</h3>
+                <p class="text-base md:text-lg">The action to perform (e.g., <code class="font-mono">ls</code>).</p>
+            </div>
+            <div class="p-4 rounded-lg bg-teal-50">
+                <span class="text-4xl">🔧</span>
+                <h3 class="text-xl font-bold text-[#00B8A9] mt-2">Options</h3>
+                <p class="text-base md:text-lg">Modify behavior (e.g., <code class="font-mono">-l</code>, <code class="font-mono">--long-format</code>).</p>
+            </div>
+            <div class="p-4 rounded-lg bg-yellow-50">
+                <span class="text-4xl">📍</span>
+                <h3 class="text-xl font-bold text-[#FFDE7D] mt-2">Arguments</h3>
+                <p class="text-base md:text-lg">Provide additional info (e.g., <code class="font-mono">/home/user</code>).</p>
+            </div>
+        </div>
+        
+        <p class="text-lg md:text-xl text-[#2D3748]">
+            Example: <code class="font-mono font-bold">ls -l /home/user</code>
+        </p>
+    </div>
+</body>
+</html>
+```
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navigating the File System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F3D4;
+            color: #2D3748;
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen p-6">
+    <div class="bg-white rounded-lg shadow-xl p-8 md:p-12 max-w-2xl w-full text-center">
+        <h1 class="text-4xl md:text-5xl font-black tracking-tighter text-[#F6416C] mb-4">
+            Navigating the File System
+        </h1>
+        <p class="text-xl md:text-2xl font-semibold text-[#00B8A9] mb-8">
+            Finding Your Way Around
+        </p>
+        
+        <div class="space-y-6 mb-8">
+            <div class="bg-[#FFDE7D] p-6 rounded-lg shadow-md text-left">
+                <h3 class="text-2xl font-bold text-[#2D3748] mb-2">📂 <code class="font-mono">cd</code> (Change Directory)</h3>
+                <ul class="list-disc list-inside text-lg md:text-xl space-y-1">
+                    <li><code class="font-mono">cd /path/to/dir</code>: Go to specific directory</li>
+                    <li><code class="font-mono">cd ..</code>: Go up one directory</li>
+                    <li><code class="font-mono">cd ~</code>: Go to home directory</li>
+                </ul>
+            </div>
+            
+            <div class="bg-[#00B8A9] p-6 rounded-lg shadow-md text-left">
+                <h3 class="text-2xl font-bold text-white mb-2">📋 <code class="font-mono">ls</code> (List Directory Contents)</h3>
+                <ul class="list-disc list-inside text-lg md:text-xl text-white space-y-1">
+                    <li><code class="font-mono">ls</code>: List current directory</li>
+                    <li><code class="font-mono">ls -l</code>: Long format (permissions, size, date)</li>
+                    <li><code class="font-mono">ls -a</code>: Show hidden files</li>
+                </ul>
+            </div>
+            
+            <div class="bg-[#F6416C] p-6 rounded-lg shadow-md text-left">
+                <h3 class="text-2xl font-bold text-white mb-2">📍 <code class="font-mono">pwd</code> (Print Working Directory)</h3>
+                <p class="text-lg md:text-xl text-white">
+                    Display the absolute path of your current location.
+                </p>
+            </div>
+        </div>
+        
+        <p class="text-lg md:text-xl text-[#2D3748]">
+            Master these to move freely in your system!
+        </p>
+    </div>
+</body>
+</html>
+```
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File and Directory Operations</title>
+    <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
+    <link rel="preconnect" href="[https://fonts.googleapis.com](https://fonts.googleapis.com)">
+    <link rel="preconnect" href="[https://fonts.gstatic.com](https://fonts.gstatic.com)" crossorigin>
+    <link href="[https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap](https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap)" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F3D4;
+            color: #2D3748;
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen p-6">
+    <div class="bg-white rounded-lg shadow-xl p-8 md:p-12 max-w-2xl w-full text-center">
+        <h1 class="text-4xl md:text-5xl font-black tracking-tighter text-[#F6416C] mb-4">
+            File & Directory Operations
+        </h1>
+        <p class="text-xl md:text-2xl font-semibold text-[#00B8A9] mb-8">
+            Managing Your Data
+        </p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div class="bg-[#FFDE7D] p-5 rounded-lg shadow-md text-left">
+                <h3 class="text-xl font-bold text-[#2D3748] mb-2">➕ <code class="font-mono">mkdir</code> / <code class="font-mono">touch</code></h3>
+                <p class="text-lg">Create directories (<code class="font-mono">mkdir my_folder</code>) or empty files (<code class="font-mono">touch new.txt</code>).</p>
+            </div>
+            <div class="bg-[#00B8A9] p-5 rounded-lg shadow-md text-left text-white">
+                <h3 class="text-xl font-bold mb-2">📝 <code class="font-mono">cp</code> / <code class="font-mono">mv</code></h3>
+                <p class="text-lg">Copy files (<code class="font-mono">cp file.txt dest/</code>) or move/rename (<code class="font-mono">mv old.txt new.txt</code>).</p>
+            </div>
+            <div class="bg-[#F6416C] p-5 rounded-lg shadow-md text-left md:col-span-2">
+                <h3 class="text-xl font-bold text-white mb-2">🗑️ <code class="font-mono">rm</code> (Remove)</h3>
+                <p class="text-lg text-white">
+                    Delete files or directories. <span class="font-bold">USE WITH CAUTION!</span>
+                    (<code class="font-mono">rm file.txt</code>, <code class="font-mono">rm -r folder/</code>).
+                </p>
+            </div>
+        </div>
+        
+        <p class="text-lg md:text-xl text-[#2D3748]">
+            Your essential toolkit for data management.
+        </p>
+    </div>
+</body>
+</html>
+```
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Viewing and Editing Files</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F3D4;
+            color: #2D3748;
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen p-6">
+    <div class="bg-white rounded-lg shadow-xl p-8 md:p-12 max-w-2xl w-full text-center">
+        <h1 class="text-4xl md:text-5xl font-black tracking-tighter text-[#F6416C] mb-4">
+            Viewing & Editing Files
+        </h1>
+        <p class="text-xl md:text-2xl font-semibold text-[#00B8A9] mb-8">
+            Inspecting and Modifying Content
+        </p>
+        
+        <div class="space-y-6 mb-8">
+            <div class="bg-[#FFDE7D] p-6 rounded-lg shadow-md text-left">
+                <h3 class="text-2xl font-bold text-[#2D3748] mb-2">👁️ <code class="font-mono">cat</code> / <code class="font-mono">more</code> / <code class="font-mono">less</code></h3>
+                <ul class="list-disc list-inside text-lg md:text-xl space-y-1">
+                    <li><code class="font-mono">cat</code>: Display entire file.</li>
+                    <li><code class="font-mono">more</code> / <code class="font-mono">less</code>: View large files page by page.</li>
+                </ul>
+            </div>
+            
+            <div class="bg-[#00B8A9] p-6 rounded-lg shadow-md text-left text-white">
+                <h3 class="text-2xl font-bold mb-2">✍️ Text Editors: <code class="font-mono">nano</code> & <code class="font-mono">vim</code></h3>
+                <ul class="list-disc list-inside text-lg md:text-xl space-y-1">
+                    <li><span class="font-bold">nano:</span> Simple, user-friendly.</li>
+                    <li><span class="font-bold">vim:</span> Powerful, highly configurable (steep learning curve).</li>
+                </ul>
+            </div>
+        </div>
+        
+        <p class="text-lg md:text-xl text-[#2D3748]">
+            Choose the right tool for the job!
+        </p>
+    </div>
+</body>
+</html>
+```
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Permissions and Ownership</title>
+    <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
+    <link rel="preconnect" href="[https://fonts.googleapis.com](https://fonts.googleapis.com)">
+    <link rel="preconnect" href="[https://fonts.gstatic.com](https://fonts.gstatic.com)" crossorigin>
+    <link href="[https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap](https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap)" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F3D4;
+            color: #2D3748;
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen p-6">
+    <div class="bg-white rounded-lg shadow-xl p-8 md:p-12 max-w-2xl w-full text-center">
+        <h1 class="text-4xl md:text-5xl font-black tracking-tighter text-[#F6416C] mb-4">
+            Permissions & Ownership
+        </h1>
+        <p class="text-xl md:text-2xl font-semibold text-[#00B8A9] mb-8">
+            Controlling Access to Your Files
+        </p>
+        
+        <div class="space-y-6 mb-8">
+            <div class="bg-[#FFDE7D] p-6 rounded-lg shadow-md text-left">
+                <h3 class="text-2xl font-bold text-[#2D3748] mb-2">🔒 File Permissions (<code class="font-mono">rwx</code>)</h3>
+                <p class="text-lg md:text-xl">
+                    Determine who can <span class="font-bold">read</span>, <span class="font-bold">write</span>, or <span class="font-bold">execute</span>.
+                </p>
+                <p class="text-base md:text-lg mt-2">
+                    Use <code class="font-mono">chmod</code> to change: <code class="font-mono">chmod 755 script.sh</code> (rwxr-xr-x).
+                </p>
+            </div>
+            
+            <div class="bg-[#00B8A9] p-6 rounded-lg shadow-md text-left text-white">
+                <h3 class="text-2xl font-bold mb-2">👤 File Ownership</h3>
+                <p class="text-lg md:text-xl">
+                    Every file has an owner (user) and a group.
+                </p>
+                <p class="text-base md:text-lg mt-2">
+                    Use <code class="font-mono">chown</code> to change: <code class="font-mono">chown newuser file.txt</code>.
+                </p>
+            </div>
+        </div>
+        
+        <p class="text-lg md:text-xl text-[#2D3748]">
+            Secure your system, one file at a time!
+        </p>
+    </div>
+</body>
+</html>
+```
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User and Group Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F3D4;
+            color: #2D3748;
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen p-6">
+    <div class="bg-white rounded-lg shadow-xl p-8 md:p-12 max-w-2xl w-full text-center">
+        <h1 class="text-4xl md:text-5xl font-black tracking-tighter text-[#F6416C] mb-4">
+            User & Group Management
+        </h1>
+        <p class="text-xl md:text-2xl font-semibold text-[#00B8A9] mb-8">
+            Administering System Access
+        </p>
+        
+        <div class="space-y-6 mb-8">
+            <div class="bg-[#FFDE7D] p-6 rounded-lg shadow-md text-left">
+                <h3 class="text-2xl font-bold text-[#2D3748] mb-2">➕ <code class="font-mono">useradd</code> / <code class="font-mono">passwd</code></h3>
+                <ul class="list-disc list-inside text-lg md:text-xl space-y-1">
+                    <li><code class="font-mono">sudo useradd -m new_user</code>: Create new user.</li>
+                    <li><code class="font-mono">sudo passwd new_user</code>: Set user password.</li>
+                </ul>
+            </div>
+            
+            <div class="bg-[#00B8A9] p-6 rounded-lg shadow-md text-left text-white">
+                <h3 class="text-2xl font-bold mb-2">👥 <code class="font-mono">groupadd</code> / <code class="font-mono">usermod</code></h3>
+                <ul class="list-disc list-inside text-lg md:text-xl text-white space-y-1">
+                    <li><code class="font-mono">sudo groupadd developers</code>: Create new group.</li>
+                    <li><code class="font-mono">sudo usermod -aG group user</code>: Add user to group.</li>
+                </ul>
+            </div>
+        </div>
+        
+        <p class="text-lg md:text-xl text-[#2D3748]">
+            Essential for multi-user environments.
+        </p>
+    </div>
+</body>
+</html>
+```
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Process Management</title>
+    <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
+    <link rel="preconnect" href="[https://fonts.googleapis.com](https://fonts.googleapis.com)">
+    <link rel="preconnect" href="[https://fonts.gstatic.com](https://fonts.gstatic.com)" crossorigin>
+    <link href="[https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap](https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap)" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F3D4;
+            color: #2D3748;
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen p-6">
+    <div class="bg-white rounded-lg shadow-xl p-8 md:p-12 max-w-2xl w-full text-center">
+        <h1 class="text-4xl md:text-5xl font-black tracking-tighter text-[#F6416C] mb-4">
+            Process Management
+        </h1>
+        <p class="text-xl md:text-2xl font-semibold text-[#00B8A9] mb-8">
+            Monitoring & Controlling Running Programs
+        </p>
+        
+        <div class="space-y-6 mb-8">
+            <div class="bg-[#FFDE7D] p-6 rounded-lg shadow-md text-left">
+                <h3 class="text-2xl font-bold text-[#2D3748] mb-2">📊 <code class="font-mono">ps</code> (Process Status)</h3>
+                <p class="text-lg md:text-xl">
+                    Display information about running processes.
+                </p>
+                <p class="text-base md:text-lg mt-2">
+                    <code class="font-mono">ps aux</code>: Show all processes.
+                </p>
+            </div>
+            
+            <div class="bg-[#00B8A9] p-6 rounded-lg shadow-md text-left text-white">
+                <h3 class="text-2xl font-bold mb-2">💥 <code class="font-mono">kill</code> (Terminate Processes)</h3>
+                <p class="text-lg md:text-xl">
+                    Send signals to processes, often to terminate them.
+                </p>
+                <p class="text-base md:text-lg mt-2">
+                    <code class="font-mono">kill 12345</code> (polite), <code class="font-mono">kill -9 12345</code> (forceful).
+                </p>
+            </div>
+            
+            <div class="bg-[#F6416C] p-6 rounded-lg shadow-md text-left text-white">
+                <h3 class="text-2xl font-bold mb-2">📈 <code class="font-mono">top</code> / <code class="font-mono">htop</code></h3>
+                <p class="text-lg md:text-xl">
+                    Real-time process monitoring.
+                </p>
+            </div>
+        </div>
+        
+        <p class="text-lg md:text-xl text-[#2D3748]">
+            Keep an eye on your system's heartbeat.
+        </p>
+    </div>
+</body>
+</html>
+```
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirection and Pipes</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F3D4;
+            color: #2D3748;
+        }
+        .pipe-diagram .box {
+            border: 2px solid #00B8A9;
+            background-color: #ffffff;
+        }
+        .pipe-diagram .pipe {
+            width: 50px;
+            height: 15px;
+            background-color: #FFDE7D;
+            border-left: 2px solid #00B8A9;
+            border-right: 2px solid #00B8A9;
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen p-6">
+    <div class="bg-white rounded-lg shadow-xl p-8 md:p-12 max-w-2xl w-full text-center">
+        <h1 class="text-4xl md:text-5xl font-black tracking-tighter text-[#F6416C] mb-4">
+            Redirection & Pipes
+        </h1>
+        <p class="text-xl md:text-2xl font-semibold text-[#00B8A9] mb-8">
+            Connecting Commands for Powerful Workflows
+        </p>
+        
+        <div class="space-y-6 mb-8">
+            <div class="bg-[#FFDE7D] p-6 rounded-lg shadow-md text-left">
+                <h3 class="text-2xl font-bold text-[#2D3748] mb-2">➡️ Redirection (<code class="font-mono">></code> & <code class="font-mono">>></code>)</h3>
+                <ul class="list-disc list-inside text-lg md:text-xl space-y-1">
+                    <li><code class="font-mono">></code>: Overwrite file (<code class="font-mono">ls > file.txt</code>)</li>
+                    <li><code class="font-mono">>></code>: Append to file (<code class="font-mono">echo "hi" >> file.txt</code>)</li>
+                </ul>
+            </div>
+            
+            <div class="bg-[#00B8A9] p-6 rounded-lg shadow-md text-left text-white">
+                <h3 class="text-2xl font-bold mb-2">⛓️ Pipes (<code class="font-mono">|</code>)</h3>
+                <p class="text-lg md:text-xl">
+                    Send output of one command as input to another.
+                </p>
+                <div class="pipe-diagram flex items-center justify-center space-x-2 mt-4">
+                    <div class="box p-3 rounded-lg text-center">
+                        <p class="font-mono">command1</p>
+                    </div>
+                    <div class="pipe-arrow text-4xl text-[#F6416C]">|</div>
+                    <div class="box p-3 rounded-lg text-center">
+                        <p class="font-mono">command2</p>
+                    </div>
+                </div>
+                <p class="text-base md:text-lg mt-2 text-center">
+                    Example: <code class="font-mono">ls -l | less</code>
+                </p>
+            </div>
+        </div>
+        
+        <p class="text-lg md:text-xl text-[#2D3748]">
+            Chain commands for ultimate efficiency!
+        </p>
+    </div>
+</body>
+</html>
+```
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wildcards and Regular Expressions</title>
+    <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
+    <link rel="preconnect" href="[https://fonts.googleapis.com](https://fonts.googleapis.com)">
+    <link rel="preconnect" href="[https://fonts.gstatic.com](https://fonts.gstatic.com)" crossorigin>
+    <link href="[https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap](https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap)" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F3D4;
+            color: #2D3748;
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen p-6">
+    <div class="bg-white rounded-lg shadow-xl p-8 md:p-12 max-w-2xl w-full text-center">
+        <h1 class="text-4xl md:text-5xl font-black tracking-tighter text-[#F6416C] mb-4">
+            Wildcards & Regex
+        </h1>
+        <p class="text-xl md:text-2xl font-semibold text-[#00B8A9] mb-8">
+            Pattern Matching for Efficiency
+        </p>
+        
+        <div class="space-y-6 mb-8">
+            <div class="bg-[#FFDE7D] p-6 rounded-lg shadow-md text-left">
+                <h3 class="text-2xl font-bold text-[#2D3748] mb-2">⭐ Wildcards (Globbing)</h3>
+                <ul class="list-disc list-inside text-lg md:text-xl space-y-1">
+                    <li><code class="font-mono">*</code>: Matches zero or more characters (<code class="font-mono">ls *.txt</code>)</li>
+                    <li><code class="font-mono">?</code>: Matches exactly one character (<code class="font-mono">ls photo?.jpg</code>)</li>
+                    <li><code class="font-mono">[]</code>: Matches any single char in brackets (<code class="font-mono">ls [abc]file.txt</code>)</li>
+                </ul>
+            </div>
+            
+            <div class="bg-[#00B8A9] p-6 rounded-lg shadow-md text-left text-white">
+                <h3 class="text-2xl font-bold mb-2">🔍 <code class="font-mono">grep</code> (Global Regex Print)</h3>
+                <p class="text-lg md:text-xl">
+                    Search for patterns (regular expressions) within files.
+                </p>
+                <p class="text-base md:text-lg mt-2">
+                    <code class="font-mono">grep "keyword" file.txt</code>
+                </p>
+                <p class="text-base md:text-lg mt-1">
+                    <code class="font-mono">grep -i "error" log.log</code> (case-insensitive)
+                </p>
+            </div>
+        </div>
+        
+        <p class="text-lg md:text-xl text-[#2D3748]">
+            Find exactly what you need, fast!
+        </p>
+    </div>
+</body>
+</html>
+```
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conclusion: Embrace the Command Line</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F3D4;
+            color: #2D3748;
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen p-6">
+    <div class="bg-white rounded-lg shadow-xl p-8 md:p-12 max-w-2xl w-full text-center">
+        <h1 class="text-4xl md:text-5xl font-black tracking-tighter text-[#F6416C] mb-4">
+            Embrace the Command Line!
+        </h1>
+        <p class="text-xl md:text-2xl font-semibold text-[#00B8A9] mb-8">
+            Your Journey to Shell Mastery
+        </p>
+        
+        <div class="space-y-6 mb-8">
+            <div class="flex items-center justify-center space-x-4">
+                <span class="text-5xl">🌱</span>
+                <p class="text-lg md:text-xl font-bold text-[#2D3748]">Start Small: Begin with basics.</p>
+            </div>
+            <div class="flex items-center justify-center space-x-4">
+                <span class="text-5xl">🔁</span>
+                <p class="text-lg md:text-xl font-bold text-[#2D3748]">Practice Regularly: Consistency is key.</p>
+            </div>
+            <div class="flex items-center justify-center space-x-4">
+                <span class="text-5xl">🗺️</span>
+                <p class="text-lg md:text-xl font-bold text-[#2D3748]">Explore: Use <code class="font-mono">man</code> for help.</p>
+            </div>
+            <div class="flex items-center justify-center space-x-4">
+                <span class="text-5xl">🤖</span>
+                <p class="text-lg md:text-xl font-bold text-[#2D3748]">Automate: Script repetitive tasks.</p>
+            </div>
+        </div>
+        
+        <p class="text-lg md:text-xl text-[#2D3748]">
+            The command line is a skill that pays dividends.
+        </p>
+        <p class="text-lg md:text-xl font-bold text-[#F6416C] mt-4">
+            Your journey begins now!
+        </p>
+    </div>
+</body>
+</html>
+```

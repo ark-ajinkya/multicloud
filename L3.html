@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LVM in Linux — Beginner Visual Guide</title>
+  <style>
+    :root {
+      --bg: #0f172a;           /* slate-900 */
+      --panel: #111827;        /* gray-900 */
+      --muted: #cbd5e1;        /* slate-300 */
+      --text: #e5e7eb;         /* gray-200 */
+      --subtext: #94a3b8;      /* slate-400 */
+      --accent: #22d3ee;       /* cyan-400 */
+      --accent-2: #a78bfa;     /* violet-400 */
+      --accent-3: #34d399;     /* emerald-400 */
+      --accent-4: #f59e0b;     /* amber-500 */
+      --border: #1f2937;       /* gray-800 */
+      --shadow: 0 10px 25px rgba(0,0,0,.35);
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg: #f8fafc;        /* slate-50 */
+        --panel: #ffffff;
+        --muted: #334155;     /* slate-700 */
+        --text: #0f172a;      /* slate-900 */
+        --subtext: #475569;   /* slate-600 */
+        --accent: #06b6d4;    /* cyan-500 */
+        --accent-2: #7c3aed;  /* violet-600 */
+        --accent-3: #059669;  /* emerald-600 */
+        --accent-4: #d97706;  /* amber-600 */
+        --border: #e2e8f0;    /* slate-200 */
+      }
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      background: radial-gradient(1200px 600px at 80% -20%, rgba(34,211,238,.08), transparent 60%),
+                  radial-gradient(1000px 500px at -10% 110%, rgba(167,139,250,.08), transparent 60%),
+                  var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 40px auto;
+      padding: 0 20px 60px;
+    }
+
+    header {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+
+    h1 {
+      font-size: clamp(28px, 2.8vw, 44px);
+      margin: 0;
+      letter-spacing: .3px;
+      line-height: 1.15;
+    }
+
+    .tagline {
+      color: var(--subtext);
+      font-size: clamp(14px, 1.2vw, 18px);
+    }
+
+    .grid {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: repeat(12, 1fr);
+    }
+
+    .card {
+      grid-column: span 12;
+      background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,0)) , var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px 18px 14px;
+      box-shadow: var(--shadow);
+    }
+
+    .card h2 {
+      margin: 6px 0 12px;
+      font-size: clamp(20px, 2vw, 26px);
+    }
+
+    .row {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: 1fr;
+    }
+
+    @media (min-width: 900px) {
+      .row { grid-template-columns: 1.2fr 1fr; align-items: start; }
+    }
+
+    .explain { color: var(--muted); font-size: 15px; }
+    .explain strong { color: var(--text); }
+    .legend {
+      display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; font-size: 14px; color: var(--subtext);
+    }
+    .dot { width: 14px; height: 14px; border-radius: 4px; display: inline-block; margin-right: 6px; border: 1px solid var(--border); }
+
+    /* SVG helpers */
+    svg { width: 100%; height: auto; }
+    .label { font-family: inherit; fill: var(--text); font-size: 12px; }
+    .muted { fill: var(--subtext); font-size: 11px; }
+    .stroke { stroke: var(--border); stroke-width: 1.2; }
+    .pv { fill: url(#pvGrad); }
+    .vg { fill: url(#vgGrad); }
+    .fs { fill: url(#fsGrad); }
+    .lv-a { fill: #1fb9d0; }
+    .lv-b { fill: #8464f7; }
+    .lv-c { fill: #20b779; }
+    .pe   { fill: rgba(255,255,255,.08); stroke: rgba(255,255,255,.12); stroke-width: .6 }
+    .arrow { stroke: var(--subtext); stroke-width: 1.5; marker-end: url(#arrowHead); fill: none; }
+
+    code.block {
+      display: block; white-space: pre-wrap; background: rgba(148,163,184,.08);
+      border: 1px dashed var(--border); border-radius: 12px; padding: 12px; color: var(--text); font-size: 13px;
+    }
+
+    footer { margin-top: 28px; color: var(--subtext); font-size: 13px; text-align: center; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>LVM in Linux — A Beginner’s Visual Guide</h1>
+      <p class="tagline">Understand how Physical Volumes (PV) combine into a Volume Group (VG) and are carved into Logical Volumes (LV) for filesystems. No JavaScript, just clean SVG diagrams.</p>
+    </header>
+
+    <!-- Section 1: Big Picture -->
+    <section class="card">
+      <h2>1) The Big Picture</h2>
+      <div class="row">
+        <div>
+          <svg viewBox="0 0 760 300" role="img" aria-label="Big picture of LVM: PVs -> VG -> LVs -> Filesystems">
+            <defs>
+              <linearGradient id="pvGrad" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%" stop-color="#0ea5e9" stop-opacity="0.35"/>
+                <stop offset="100%" stop-color="#22d3ee" stop-opacity="0.25"/>
+              </linearGradient>
+              <linearGradient id="vgGrad" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%" stop-color="#a78bfa" stop-opacity="0.32"/>
+                <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0.22"/>
+              </linearGradient>
+              <linearGradient id="fsGrad" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%" stop-color="#34d399" stop-opacity="0.28"/>
+                <stop offset="100%" stop-color="#10b981" stop-opacity="0.2"/>
+              </linearGradient>
+              <marker id="arrowHead" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--subtext)" />
+              </marker>
+            </defs>
+
+            <!-- PVs -->
+            <rect x="20" y="40" width="200" height="110" rx="10" class="pv stroke"/>
+            <text x="120" y="30" text-anchor="middle" class="label">Physical Volume (PV)</text>
+            <text x="120" y="100" text-anchor="middle" class="muted">/dev/sda2 • /dev/nvme0n1p3</text>
+
+            <rect x="20" y="170" width="200" height="110" rx="10" class="pv stroke"/>
+            <text x="120" y="245" text-anchor="middle" class="muted">/dev/sdb</text>
+
+            <!-- Arrow PV -> VG -->
+            <path d="M 230 95 C 280 95, 300 95, 330 95" class="arrow"/>
+            <path d="M 230 225 C 280 225, 300 225, 330 225" class="arrow"/>
+
+            <!-- VG -->
+            <rect x="330" y="60" width="200" height="180" rx="14" class="vg stroke"/>
+            <text x="430" y="50" text-anchor="middle" class="label">Volume Group (VG)</text>
+            <text x="430" y="160" text-anchor="middle" class="muted">vg_main</text>
+
+            <!-- Arrow VG -> LVs -->
+            <path d="M 535 150 C 580 150, 600 150, 620 150" class="arrow"/>
+
+            <!-- LVs -->
+            <g>
+              <rect x="620" y="70" width="120" height="60" rx="8" class="lv-a stroke"/>
+              <text x="680" y="100" text-anchor="middle" class="label">lv_root</text>
+            </g>
+            <g>
+              <rect x="620" y="140" width="120" height="60" rx="8" class="lv-b stroke"/>
+              <text x="680" y="170" text-anchor="middle" class="label">lv_home</text>
+            </g>
+            <g>
+              <rect x="620" y="210" width="120" height="60" rx="8" class="lv-c stroke"/>
+              <text x="680" y="240" text-anchor="middle" class="label">lv_var</text>
+            </g>
+
+            <!-- Filesystems -->
+            <text x="680" y="45" text-anchor="middle" class="label">Filesystems</text>
+            <text x="680" y="62" text-anchor="middle" class="muted">ext4 / xfs / etc.</text>
+          </svg>
+        </div>
+        <div>
+          <p class="explain">
+            <strong>Physical Volume (PV)</strong> is a disk or partition prepared for LVM. Multiple PVs combine to form a <strong>Volume Group (VG)</strong>, a pool of space. From that pool, you carve <strong>Logical Volumes (LV)</strong>, which get formatted with a <strong>filesystem</strong> (like ext4) and mounted.
+          </p>
+          <div class="legend">
+            <span><span class="dot" style="background:linear-gradient(#0ea5e959,#22d3ee44)"></span>PV</span>
+            <span><span class="dot" style="background:linear-gradient(#a78bfa52,#8b5cf638)"></span>VG</span>
+            <span><span class="dot" style="background:#1fb9d0"></span>LV: root</span>
+            <span><span class="dot" style="background:#8464f7"></span>LV: home</span>
+            <span><span class="dot" style="background:#20b779"></span>LV: var</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 2: Physical Extents -->
+    <section class="card">
+      <h2>2) Physical Extents (PE) and Logical Extents (LE)</h2>
+      <div class="row">
+        <div>
+          <svg viewBox="0 0 760 240" role="img" aria-label="PVs are sliced into equal-sized PEs; LVs map LEs onto PEs">
+            <!-- PV bar with PEs -->
+            <rect x="20" y="40" width="720" height="60" rx="10" class="pv stroke"/>
+            <!-- draw PE slices -->
+            <g>
+              <!-- 12 slices -->
+              <g>
+                <rect x="30" y="50" width="50" height="40" class="pe"/>
+                <rect x="85" y="50" width="50" height="40" class="pe"/>
+                <rect x="140" y="50" width="50" height="40" class="pe"/>
+                <rect x="195" y="50" width="50" height="40" class="pe"/>
+                <rect x="250" y="50" width="50" height="40" class="pe"/>
+                <rect x="305" y="50" width="50" height="40" class="pe"/>
+                <rect x="360" y="50" width="50" height="40" class="pe"/>
+                <rect x="415" y="50" width="50" height="40" class="pe"/>
+                <rect x="470" y="50" width="50" height="40" class="pe"/>
+                <rect x="525" y="50" width="50" height="40" class="pe"/>
+                <rect x="580" y="50" width="50" height="40" class="pe"/>
+                <rect x="635" y="50" width="50" height="40" class="pe"/>
+              </g>
+            </g>
+            <text x="380" y="30" text-anchor="middle" class="label">PV split into equal-sized PEs (e.g., 4 MiB)</text>
+
+            <!-- LV mapping made of LEs -->
+            <g>
+              <rect x="20" y="130" width="500" height="40" rx="8" class="lv-b stroke"/>
+              <text x="270" y="155" text-anchor="middle" class="label">LV (LEs) mapped across PEs</text>
+            </g>
+
+            <path d="M 270 130 C 270 110, 270 95, 270 90" class="arrow"/>
+            <path d="M 520 130 C 520 110, 600 95, 620 90" class="arrow"/>
+          </svg>
+        </div>
+        <div>
+          <p class="explain">
+            LVM chops PVs into small, equal-sized blocks called <strong>Physical Extents (PE)</strong>. Logical Volumes are built from <strong>Logical Extents (LE)</strong>, which map 1:1 onto PEs. This gives LVM its flexibility: LVs can grow by adding more extents from the pool.
+          </p>
+          <code class="block">Default PE size is often 4 MiB (varies by distro). Choose larger PEs for very large VGs to reduce metadata size.</code>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 3: Typical Workflow -->
+    <section class="card">
+      <h2>3) Typical Setup Workflow (at a glance)</h2>
+      <div class="row">
+        <div>
+          <svg viewBox="0 0 760 260" role="img" aria-label="Workflow: create PVs, create VG, create LV, mkfs, mount">
+            <!-- Steps boxes -->
+            <g>
+              <rect x="20"  y="40" width="140" height="54" rx="10" class="pv stroke"/>
+              <text x="90" y="70" text-anchor="middle" class="label">1) pvcreate</text>
+            </g>
+            <path d="M 160 67 C 190 67, 200 67, 220 67" class="arrow"/>
+            <g>
+              <rect x="220" y="40" width="140" height="54" rx="10" class="vg stroke"/>
+              <text x="290" y="70" text-anchor="middle" class="label">2) vgcreate</text>
+            </g>
+            <path d="M 360 67 C 390 67, 400 67, 420 67" class="arrow"/>
+            <g>
+              <rect x="420" y="40" width="140" height="54" rx="10" class="lv-a stroke"/>
+              <text x="490" y="70" text-anchor="middle" class="label">3) lvcreate</text>
+            </g>
+            <path d="M 560 67 C 590 67, 600 67, 610 67" class="arrow"/>
+            <g>
+              <rect x="610" y="40" width="130" height="54" rx="10" class="fs stroke"/>
+              <text x="675" y="58" text-anchor="middle" class="label">4) mkfs</text>
+              <text x="675" y="75" text-anchor="middle" class="muted">ext4/xfs</text>
+            </g>
+            <path d="M 675 95 C 675 120, 675 130, 675 145" class="arrow"/>
+            <g>
+              <rect x="610" y="145" width="130" height="54" rx="10" class="lv-c stroke"/>
+              <text x="675" y="175" text-anchor="middle" class="label">5) mount</text>
+            </g>
+
+            <!-- bottom caption -->
+            <text x="380" y="225" text-anchor="middle" class="muted">Repeat lvcreate → mkfs → mount for more LVs (e.g., /home, /var)</text>
+          </svg>
+        </div>
+        <div>
+          <code class="block"># Example (assumes /dev/sda2 and /dev/sdb are free)
+pvcreate /dev/sda2 /dev/sdb
+vgcreate vg_main /dev/sda2 /dev/sdb
+lvcreate -n lv_home -L 80G vg_main
+mkfs.ext4 /dev/vg_main/lv_home
+mkdir -p /home
+mount /dev/vg_main/lv_home /home</code>
+          <p class="explain">Edit device names and sizes to match your system. <strong>Be careful</strong>: these actions can destroy data if used on the wrong disk.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 4: Resizing & Snapshots -->
+    <section class="card">
+      <h2>4) Growing, Shrinking & Snapshots</h2>
+      <div class="row">
+        <div>
+          <svg viewBox="0 0 760 300" role="img" aria-label="Extend LV and create snapshot">
+            <!-- LV before -->
+            <rect x="30" y="60" width="220" height="60" rx="10" class="lv-b stroke"/>
+            <text x="140" y="90" text-anchor="middle" class="label">LV before (100G)</text>
+
+            <!-- Arrow extend -->
+            <path d="M 260 90 C 300 90, 320 90, 340 90" class="arrow"/>
+
+            <!-- LV after (wider) -->
+            <rect x="340" y="60" width="310" height="60" rx="10" class="lv-b stroke"/>
+            <text x="495" y="90" text-anchor="middle" class="label">lvextend + resize2fs (→ 180G)</text>
+
+            <!-- Snapshot concept -->
+            <rect x="420" y="170" width="150" height="54" rx="10" class="lv-a stroke"/>
+            <text x="495" y="200" text-anchor="middle" class="label">Snapshot LV</text>
+            <text x="495" y="218" text-anchor="middle" class="muted">Copy-on-write</text>
+
+            <path d="M 500 120 C 500 140, 500 150, 495 165" class="arrow"/>
+          </svg>
+        </div>
+        <div>
+          <code class="block"># Grow an LV and its ext4 filesystem (online on many distros)
+lvextend -L +80G /dev/vg_main/lv_home
+resize2fs /dev/vg_main/lv_home
+
+# Shrink (offline: unmount & fsck recommended for ext4)
+umount /home
+fsck -f /dev/vg_main/lv_home
+resize2fs /dev/vg_main/lv_home 60G
+lvreduce -L 60G /dev/vg_main/lv_home
+mount /home
+
+# Create a snapshot (size holds changed blocks)
+lvcreate -s -n snap_home -L 10G /dev/vg_main/lv_home
+# Remove when done
+lvremove /dev/vg_main/snap_home
+</code>
+          <p class="explain"><strong>Extending</strong> is usually safe online (depends on FS). <strong>S hrinking</strong> requires extra care: unmount and run a filesystem check first. <strong>Snapshots</strong> are space-efficient checkpoints useful for backups and experimentation.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 5: Mirroring & Striping overview -->
+    <section class="card">
+      <h2>5) Layouts: Linear, Striping, Mirroring</h2>
+      <div class="row">
+        <div>
+          <svg viewBox="0 0 760 300" role="img" aria-label="Different LV layouts across multiple PVs">
+            <defs>
+              <pattern id="stripeA" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+                <rect width="4" height="8" fill="rgba(255,255,255,.15)" />
+              </pattern>
+            </defs>
+
+            <!-- Linear layout (fills PV1 then PV2) -->
+            <text x="90" y="40" text-anchor="middle" class="label">Linear</text>
+            <rect x="20" y="50" width="140" height="40" rx="8" class="lv-c stroke"/>
+            <rect x="165" y="50" width="140" height="40" rx="8" class="lv-c stroke"/>
+            <text x="90" y="105" text-anchor="middle" class="muted">PV1 → PV2</text>
+
+            <!-- Striping across PVs for throughput -->
+            <text x="380" y="40" text-anchor="middle" class="label">Striped (-i 2)</text>
+            <rect x="300" y="50" width="160" height="40" rx="8" class="lv-a stroke"/>
+            <rect x="465" y="50" width="160" height="40" rx="8" class="lv-a stroke" style="fill:url(#stripeA)"/>
+            <text x="380" y="105" text-anchor="middle" class="muted">Data alternates PV1/PV2</text>
+
+            <!-- Mirroring (RAID1-style) -->
+            <text x="670" y="40" text-anchor="middle" class="label">Mirrored (-m 1)</text>
+            <rect x="590" y="50" width="140" height="40" rx="8" class="lv-b stroke"/>
+            <rect x="590" y="95" width="140" height="40" rx="8" class="lv-b stroke"/>
+            <text x="660" y="155" text-anchor="middle" class="muted">Copies on both PVs</text>
+          </svg>
+        </div>
+        <div>
+          <code class="block"># Linear LV (default)
+lvcreate -n lv_data -L 200G vg_main
+
+# Striped LV across 2 PVs for speed
+lvcreate -n lv_fast -L 200G -i 2 vg_main
+
+# Mirrored LV (two copies for redundancy)
+lvcreate -n lv_safe -L 200G -m 1 vg_main
+</code>
+          <p class="explain">Choose <strong>striping</strong> for throughput (needs ≥2 PVs), <strong>mirroring</strong> for redundancy (stores multiple copies), or <strong>linear</strong> for simplicity.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 6: Inspect & Manage -->
+    <section class="card">
+      <h2>6) Inspecting & Managing LVM</h2>
+      <div class="row">
+        <div>
+          <svg viewBox="0 0 760 210" role="img" aria-label="Commands to inspect PV, VG, LV">
+            <rect x="20" y="40" width="220" height="50" rx="10" class="pv stroke"/>
+            <text x="130" y="70" text-anchor="middle" class="label">pvdisplay / pvs</text>
+
+            <rect x="270" y="40" width="220" height="50" rx="10" class="vg stroke"/>
+            <text x="380" y="70" text-anchor="middle" class="label">vgdisplay / vgs</text>
+
+            <rect x="520" y="40" width="220" height="50" rx="10" class="lv-a stroke"/>
+            <text x="630" y="70" text-anchor="middle" class="label">lvdisplay / lvs</text>
+
+            <text x="380" y="130" text-anchor="middle" class="muted">Use the short forms (pvs, vgs, lvs) for concise tables.</text>
+          </svg>
+        </div>
+        <div>
+          <code class="block"># Quick inventory
+pvs     # PVs
+vgs     # VGs
+lvs     # LVs
+
+# Space report (human readable)
+vgs -o +vg_free --units h
+lvs -a -o +devices --units h
+</code>
+          <p class="explain">The <code>display</code> commands show verbose details; the short forms show neat tables. Add columns with <code>-o</code> and show sizes with <code>--units</code>.</p>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      Made for beginners. Static, accessible, and printable. You can save this file and open it in any browser.
+    </footer>
+  </div>
+</body>
+</html>

@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS VPC Components</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Use Inter font for the entire document */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Enforce poster dimensions and flexbox layout for centering */
+        .poster-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4rem; /* Spacing between posters */
+            padding: 4rem;
+        }
+        .poster {
+            width: 1200px;
+            height: 1200px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            border-radius: 2.5rem;
+            position: relative; /* For absolute positioning of elements */
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .chart-container {
+            width: 500px;
+            height: 500px;
+        }
+    </style>
+</head>
+<body class="bg-gray-950 text-gray-100">
+
+    <!-- Main Container for all posters -->
+    <div class="poster-container">
+
+        <!-- POSTER 1: Subnet -->
+        <div class="poster bg-gradient-to-br from-blue-900 to-blue-950 p-16">
+            <h1 class="text-7xl font-bold text-center mb-16 uppercase tracking-wider text-blue-300">Subnet</h1>
+            <div class="flex-1 flex flex-col items-center justify-center p-8">
+                <div class="bg-gray-800 border-4 border-dashed border-gray-700 rounded-[3rem] p-16 flex flex-col items-center shadow-2xl w-full h-full relative">
+                    <span class="absolute top-6 left-12 text-gray-400 text-3xl font-semibold">VPC (10.0.0.0/16)</span>
+                    <div class="flex flex-1 w-full gap-12 p-8 items-center justify-center">
+                        <!-- Public Subnet -->
+                        <div class="flex-1 bg-sky-500 bg-opacity-20 border-4 border-sky-400 rounded-[2.5rem] flex flex-col p-8 items-center justify-center relative shadow-lg">
+                            <span class="absolute top-6 left-6 text-white text-4xl font-bold">Public Subnet</span>
+                            <span class="absolute bottom-6 right-6 text-white text-2xl font-medium">10.0.1.0/24</span>
+                            <p class="text-center text-xl font-semibold mt-16 text-sky-200">
+                                Publicly accessible resources like Web Servers.
+                            </p>
+                            <div class="w-2/3 h-24 bg-sky-600 rounded-full flex items-center justify-center mt-12 shadow-xl">
+                                <p class="text-3xl font-extrabold text-white">Internet Gateway</p>
+                            </div>
+                        </div>
+
+                        <!-- Private Subnet -->
+                        <div class="flex-1 bg-indigo-500 bg-opacity-20 border-4 border-indigo-400 rounded-[2.5rem] flex flex-col p-8 items-center justify-center relative shadow-lg">
+                            <span class="absolute top-6 left-6 text-white text-4xl font-bold">Private Subnet</span>
+                            <span class="absolute bottom-6 right-6 text-white text-2xl font-medium">10.0.2.0/24</span>
+                            <p class="text-center text-xl font-semibold mt-16 text-indigo-200">
+                                Isolated resources like Databases.
+                            </p>
+                            <div class="w-2/3 h-24 bg-indigo-600 rounded-full flex items-center justify-center mt-12 shadow-xl">
+                                <p class="text-3xl font-extrabold text-white">NAT Gateway</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center text-3xl mt-16 font-medium text-blue-200">
+                A subnet is a logical subdivision of your VPC's IP address range, used to organize and isolate resources.
+            </div>
+        </div>
+
+        <!-- POSTER 2: Route Tables -->
+        <div class="poster bg-gradient-to-br from-gray-800 to-gray-900 p-16">
+            <h1 class="text-7xl font-bold text-center mb-16 uppercase tracking-wider text-gray-300">Route Tables</h1>
+
+            <div class="flex-1 flex flex-col items-center justify-center p-8">
+                <p class="text-center text-4xl font-semibold mb-12 text-gray-200">
+                    A set of rules that directs network traffic from subnets.
+                </p>
+
+                <!-- Chart.js Visualization -->
+                <div class="chart-container flex items-center justify-center bg-gray-700 rounded-[3rem] p-10 shadow-2xl">
+                    <canvas id="routeTableChart"></canvas>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-12 mt-16 text-center">
+                <div class="p-8 bg-gray-800 rounded-[2rem] shadow-lg border-2 border-gray-700">
+                    <h3 class="text-3xl font-bold mb-4 text-orange-400">Destination</h3>
+                    <p class="text-xl text-gray-300">The IP address range where traffic is going. E.g., `0.0.0.0/0` for all external traffic.</p>
+                </div>
+                <div class="p-8 bg-gray-800 rounded-[2rem] shadow-lg border-2 border-gray-700">
+                    <h3 class="text-3xl font-bold mb-4 text-green-400">Target</h3>
+                    <p class="text-xl text-gray-300">The gateway or connection to send the traffic through. E.g., `Internet Gateway`.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- POSTER 3: Security Groups -->
+        <div class="poster bg-gradient-to-br from-emerald-800 to-emerald-950 p-16">
+            <h1 class="text-7xl font-bold text-center mb-16 uppercase tracking-wider text-emerald-300">Security Groups</h1>
+
+            <div class="flex-1 flex flex-col items-center justify-center p-8">
+                <p class="text-center text-4xl font-semibold mb-12 text-emerald-200">
+                    A stateful, instance-level firewall.
+                </p>
+
+                <!-- Visual Representation -->
+                <div class="relative w-3/4 h-3/4 flex items-center justify-center">
+                    <!-- Security Group "Shield" -->
+                    <div class="absolute inset-0 bg-white bg-opacity-10 border-4 border-dashed border-emerald-400 rounded-[3rem] p-16 flex items-center justify-center">
+                        <span class="absolute top-6 left-6 text-white text-3xl font-bold">Security Group</span>
+                    </div>
+
+                    <!-- EC2 Instance -->
+                    <div class="w-1/2 h-1/2 bg-gray-800 rounded-[2rem] shadow-2xl flex flex-col items-center justify-center p-8 text-center border-2 border-gray-600">
+                        <div class="text-6xl text-emerald-400 mb-4">&#9881;</div> <!-- Gear emoji as icon -->
+                        <h3 class="text-4xl font-bold text-white">EC2 Instance</h3>
+                        <p class="text-xl text-gray-300 mt-2">Web Server</p>
+                    </div>
+
+                    <!-- Inbound Traffic -->
+                    <div class="absolute top-1/2 -left-20 transform -translate-y-1/2 flex items-center">
+                        <div class="w-48 h-1 bg-emerald-400"></div>
+                        <div class="w-0 h-0 border-t-[10px] border-b-[10px] border-l-[20px] border-solid border-t-transparent border-b-transparent border-l-emerald-400"></div>
+                        <p class="absolute -bottom-8 left-0 text-2xl text-emerald-400 font-bold">Inbound (Allow)</p>
+                    </div>
+
+                    <!-- Outbound Traffic -->
+                    <div class="absolute top-1/2 -right-20 transform -translate-y-1/2 flex items-center">
+                        <div class="w-0 h-0 border-t-[10px] border-b-[10px] border-r-[20px] border-solid border-t-transparent border-b-transparent border-r-emerald-400"></div>
+                        <div class="w-48 h-1 bg-emerald-400"></div>
+                        <p class="absolute -bottom-8 right-0 text-2xl text-emerald-400 font-bold">Outbound (Allow)</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-12 mt-16 text-center">
+                <div class="p-8 bg-emerald-900 rounded-[2rem] shadow-lg border-2 border-emerald-700">
+                    <h3 class="text-3xl font-bold mb-4 text-emerald-300">Stateful</h3>
+                    <p class="text-xl text-emerald-200">Return traffic is automatically allowed. You only need to define inbound rules.</p>
+                </div>
+                <div class="p-8 bg-emerald-900 rounded-[2rem] shadow-lg border-2 border-emerald-700">
+                    <h3 class="text-3xl font-bold mb-4 text-emerald-300">Instance Level</h3>
+                    <p class="text-xl text-emerald-200">Rules are associated with a specific EC2 instance, not the entire subnet.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- POSTER 4: NACLs (Network ACLs) -->
+        <div class="poster bg-gradient-to-br from-red-900 to-red-950 p-16">
+            <h1 class="text-7xl font-bold text-center mb-16 uppercase tracking-wider text-red-300">Network ACLs</h1>
+
+            <div class="flex-1 flex flex-col items-center justify-center p-8">
+                <p class="text-center text-4xl font-semibold mb-12 text-red-200">
+                    A stateless, subnet-level firewall.
+                </p>
+
+                <!-- Visual Representation -->
+                <div class="relative w-3/4 h-3/4 flex items-center justify-center">
+                    <!-- NACL "Shield" -->
+                    <div class="absolute inset-0 bg-white bg-opacity-10 border-4 border-dashed border-red-400 rounded-[3rem] p-16 flex items-center justify-center">
+                        <span class="absolute top-6 left-6 text-white text-3xl font-bold">Network ACL</span>
+                    </div>
+
+                    <!-- Subnet Container -->
+                    <div class="w-3/4 h-3/4 bg-gray-800 rounded-[2rem] shadow-2xl flex flex-col items-center justify-center p-8 border-2 border-gray-600">
+                        <div class="text-6xl text-red-400 mb-4">&#128274;</div> <!-- Lock emoji as icon -->
+                        <h3 class="text-4xl font-bold text-white">Subnet</h3>
+                        <p class="text-xl text-gray-300 mt-2">10.0.1.0/24</p>
+                    </div>
+
+                    <!-- Inbound Traffic -->
+                    <div class="absolute top-1/2 -left-20 transform -translate-y-1/2 flex items-center">
+                        <div class="w-48 h-1 bg-red-400"></div>
+                        <div class="w-0 h-0 border-t-[10px] border-b-[10px] border-l-[20px] border-solid border-t-transparent border-b-transparent border-l-red-400"></div>
+                        <p class="absolute -bottom-8 left-0 text-2xl text-red-400 font-bold">Inbound (Allow/Deny)</p>
+                    </div>
+
+                    <!-- Outbound Traffic -->
+                    <div class="absolute top-1/2 -right-20 transform -translate-y-1/2 flex items-center">
+                        <div class="w-0 h-0 border-t-[10px] border-b-[10px] border-r-[20px] border-solid border-t-transparent border-b-transparent border-r-red-400"></div>
+                        <div class="w-48 h-1 bg-red-400"></div>
+                        <p class="absolute -bottom-8 right-0 text-2xl text-red-400 font-bold">Outbound (Allow/Deny)</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-12 mt-16 text-center">
+                <div class="p-8 bg-red-900 rounded-[2rem] shadow-lg border-2 border-red-700">
+                    <h3 class="text-3xl font-bold mb-4 text-red-300">Stateless</h3>
+                    <p class="text-xl text-red-200">You must explicitly define rules for both inbound and outbound traffic.</p>
+                </div>
+                <div class="p-8 bg-red-900 rounded-[2rem] shadow-lg border-2 border-red-700">
+                    <h3 class="text-3xl font-bold mb-4 text-red-300">Subnet Level</h3>
+                    <p class="text-xl text-red-200">Rules are applied to all resources within the entire subnet.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript for Chart.js -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const ctx = document.getElementById('routeTableChart').getContext('2d');
+            const routeTableChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Local Traffic', 'Internet Gateway', 'NAT Gateway', 'VPN'],
+                    datasets: [{
+                        label: 'Traffic Destination',
+                        data: [45, 30, 20, 5],
+                        backgroundColor: [
+                            'rgba(99, 102, 241, 0.7)',  // Indigo
+                            'rgba(249, 115, 22, 0.7)',  // Orange
+                            'rgba(34, 197, 94, 0.7)',   // Green
+                            'rgba(59, 130, 246, 0.7)'   // Blue
+                        ],
+                        borderColor: [
+                            'rgba(99, 102, 241, 1)',
+                            'rgba(249, 115, 22, 1)',
+                            'rgba(34, 197, 94, 1)',
+                            'rgba(59, 130, 246, 1)'
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                color: '#e5e7eb',
+                                font: {
+                                    size: 20
+                                }
+                            }
+                        },
+                        tooltip: {
+                            enabled: true,
+                            bodyFont: {
+                                size: 18
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Route Table Targets',
+                            color: '#e5e7eb',
+                            font: {
+                                size: 32,
+                                weight: 'bold'
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

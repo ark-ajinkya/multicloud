@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS Certification Learning Schedule</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%); /* Vibrant gradient background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .container {
+            background-color: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            padding: 30px;
+            max-width: 1200px; /* Increased max-width for better table display */
+            width: 100%;
+            overflow-x: auto; /* Enable horizontal scrolling for the table on small screens */
+            animation: fadeIn 1s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        h1, h2 {
+            color: #1a202c;
+            text-align: center;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #4a5568;
+        }
+        .legend-icon {
+            font-size: 1.2em;
+            margin-right: 8px;
+        }
+        .table-container {
+            overflow-x: visible; /* Ensures table is scrollable if content overflows */
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: separate; /* Use separate for rounded corners on cells */
+            border-spacing: 0; /* Remove space between cells */
+            min-width: 1000px; /* Ensure table doesn't shrink too much on smaller screens */
+        }
+        th, td {
+            padding: 15px 10px;
+            text-align: left;
+            border-bottom: 1px solid #edf2f7;
+            white-space: nowrap; /* Prevent text wrapping in cells */
+        }
+        th {
+            background-color: #4c51bf; /* Header background */
+            color: #ffffff;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            position: sticky; /* Sticky header */
+            top: 0;
+            z-index: 10;
+        }
+        tr:nth-child(even) {
+            background-color: #f7fafc; /* Zebra striping */
+        }
+        tr:hover {
+            background-color: #e2e8f0; /* Hover effect */
+            transition: background-color 0.3s ease;
+        }
+        td {
+            background-color: #ffffff; /* Default cell background */
+        }
+        /* Specific styling for the first column (Day) */
+        td:first-child {
+            font-weight: 700;
+            background-color: #e0f2f7; /* Light blue for day column */
+            position: sticky; /* Sticky first column */
+            left: 0;
+            z-index: 9;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05); /* Shadow for sticky column */
+        }
+        /* Adjusting first column header for sticky behavior */
+        th:first-child {
+            position: sticky;
+            left: 0;
+            z-index: 11; /* Higher z-index to overlap other sticky elements */
+            background-color: #4c51bf; /* Ensure header color is consistent */
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            h1 {
+                font-size: 1.8em;
+            }
+            h2 {
+                font-size: 1.4em;
+            }
+            .legend {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            th, td {
+                padding: 10px 8px;
+                font-size: 0.85em;
+            }
+            table {
+                min-width: 800px; /* Allow more horizontal scroll on smaller devices */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-3xl lg:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-500 mb-6">
+            AWS Certification Learning Schedule
+        </h1>
+        <h2 class="text-xl lg:text-2xl text-gray-700 mb-8">
+            CLF-C02 & AIF-C01 Preparation (15 Days)
+        </h2>
+
+        <div class="legend bg-blue-50 p-6 rounded-lg mb-8 shadow-inner flex flex-wrap justify-center gap-x-8 gap-y-4">
+            <div class="legend-item"><span class="legend-icon">☁️</span> <strong>CLF-C02:</strong> AWS Certified Cloud Practitioner</div>
+            <div class="legend-item"><span class="legend-icon">🤖</span> <strong>AIF-C01:</strong> AWS Certified AI Practitioner</div>
+            <div class="legend-item"><span class="legend-icon">📚</span> <strong>Theory/Concepts:</strong> Reading, video lectures, documentation</div>
+            <div class="legend-item"><span class="legend-icon">💡</span> <strong>Hands-on/Lab:</strong> Practical exercises, console exploration</div>
+            <div class="legend-item"><span class="legend-icon">📝</span> <strong>Review/Quiz:</strong> Recapping topics, short quizzes</div>
+            <div class="legend-item"><span class="legend-icon">❓</span> <strong>Practice Exam:</strong> Full-length mock exams</div>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Day</th>
+                        <th>Hour 1 (9:00-10:00 AM)</th>
+                        <th>Hour 2 (10:00-11:00 AM)</th>
+                        <th>Hour 3 (11:00-12:00 PM)</th>
+                        <th>Hour 4 (1:00-2:00 PM)</th>
+                        <th>Hour 5 (2:00-3:00 PM)</th>
+                        <th>Hour 6 (3:00-4:00 PM)</th>
+                        <th>Hour 7 (4:00-5:00 PM)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Day 1</td>
+                        <td>☁️📚 Cloud Concepts: Intro to Cloud & AWS Global Infra</td>
+                        <td>☁️📚 Cloud Concepts: Benefits & Deployment Models</td>
+                        <td>☁️💡 Cloud Concepts: Shared Responsibility Model & Security Basics</td>
+                        <td>☁️📚 Security: IAM Users, Groups, Roles & Policies</td>
+                        <td>☁️💡 Security: IAM Lab (Create User/Role)</td>
+                        <td>☁️📝 Review Day 1 & Quiz</td>
+                        <td>☁️📚 Billing & Pricing: Intro to Pricing Models</td>
+                    </tr>
+                    <tr>
+                        <td>Day 2</td>
+                        <td>☁️📚 Billing & Pricing: TCO & Cost Management Tools</td>
+                        <td>☁️💡 Billing & Pricing: Cost Explorer & Budgets Lab</td>
+                        <td>☁️📚 Technology: EC2 Concepts & Instances</td>
+                        <td>☁️💡 Technology: EC2 Launch Lab</td>
+                        <td>☁️📚 Technology: S3 Concepts & Storage Classes</td>
+                        <td>☁️💡 Technology: S3 Bucket Lab (Upload/Download)</td>
+                        <td>☁️📝 Review Day 2 & Quiz</td>
+                    </tr>
+                    <tr>
+                        <td>Day 3</td>
+                        <td>☁️📚 Technology: VPC, Subnets, Security Groups, NACLs</td>
+                        <td>☁️💡 Technology: VPC Basics Lab</td>
+                        <td>☁️📚 Technology: Databases (RDS, DynamoDB)</td>
+                        <td>☁️📚 Technology: Serverless (Lambda, API Gateway)</td>
+                        <td>☁️📚 Technology: Messaging (SQS, SNS) & Monitoring (CloudWatch)</td>
+                        <td>☁️📝 Review CLF-C02 Core Services</td>
+                        <td>☁️❓ CLF-C02 Practice Questions (Easy)</td>
+                    </tr>
+                    <tr>
+                        <td>Day 4</td>
+                        <td>🤖📚 ML Fundamentals: What is ML? Supervised Learning</td>
+                        <td>🤖📚 ML Fundamentals: Unsupervised & Reinforcement Learning</td>
+                        <td>🤖💡 ML Fundamentals: Data Prep & Feature Engineering</td>
+                        <td>🤖📚 ML Fundamentals: Model Evaluation Metrics</td>
+                        <td>☁️📝 CLF-C02 Quick Review</td>
+                        <td>🤖📚 Generative AI: Intro to GenAI & Use Cases</td>
+                        <td>🤖📝 Review Day 4 & Quiz</td>
+                    </tr>
+                    <tr>
+                        <td>Day 5</td>
+                        <td>🤖📚 Generative AI: Large Language Models (LLMs)</td>
+                        <td> 📚 Generative AI: Foundation Models (FMs)</td>
+                        <td>🤖💡 Generative AI: Prompt Engineering Basics</td>
+                        <td>🤖📚 Responsible AI: Fairness & Bias in AI</td>
+                        <td>🤖📚 Responsible AI: Transparency & Explainability</td>
+                        <td>🤖📝 Review Day 5 & Quiz</td>
+                        <td>☁️❓ CLF-C02 Practice Questions (Medium)</td>
+                    </tr>
+                    <tr>
+                        <td>Day 6</td>
+                        <td>🤖📚 Responsible AI: Privacy & Security in AI</td>
+                        <td>🤖📚 Responsible AI: AI Governance & Ethics</td>
+                        <td>🤖📚 AWS AI Services: Amazon Comprehend & Rekognition</td>
+                        <td>🤖💡 AWS AI Services: Comprehend/Rekognition Demo</td>
+                        <td>🤖📚 AWS AI Services: Amazon Transcribe & Polly</td>
+                        <td>🤖📝 Review Day 6 & Quiz</td>
+                        <td>🤖❓ AIF-C01 Practice Questions (Easy)</td>
+                    </tr>
+                    <tr>
+                        <td>Day 7</td>
+                        <td>🤖📚 AWS AI Services: Amazon Lex & Textract</td>
+                        <td>🤖💡 AWS AI Services: Lex/Textract Demo</td>
+                        <td>🤖📚 AWS AI Services: Amazon Bedrock Overview</td>
+                        <td>🤖📚 AWS AI Services: SageMaker High-Level</td>
+                        <td>☁️📝 CLF-C02 Review: Security & Compliance</td>
+                        <td>🤖📝 Review AIF-C01 Core Services</td>
+                        <td>☁️❓ CLF-C02 Practice Questions (Medium)</td>
+                    </tr>
+                    <tr>
+                        <td>Day 8</td>
+                        <td>☁️📚 CLF-C02 Deep Dive: Advanced Security (WAF, Shield, GuardDuty)</td>
+                        <td>☁️💡 CLF-C02 Lab: Security Group/NACL Scenarios</td>
+                        <td>☁️📚 CLF-C02 Deep Dive: Support Plans & Well-Architected Framework</td>
+                        <td>☁️📝 CLF-C02 Full Section Review (Billing/Technology)</td>
+                        <td>🤖📚 AIF-C01 Deep Dive: Advanced Prompt Engineering</td>
+                        <td>🤖💡 AIF-C01 Lab: Prompt Engineering Examples</td>
+                        <td>🤖📝 Review Day 8 & Quiz</td>
+                    </tr>
+                    <tr>
+                        <td>Day 9</td>
+                        <td>🤖📚 AIF-C01 Deep Dive: Fine-tuning FMs (Concepts)</td>
+                        <td>🤖📚 AIF-C01 Deep Dive: Retrieval Augmented Generation (RAG)</td>
+                        <td>🤖💡 AIF-C01 Lab: RAG Conceptual Walkthrough</td>
+                        <td>🤖📚 AIF-C01 Deep Dive: Responsible AI Best Practices</td>
+                        <td>🤖📝 AIF-C01 Full Section Review (ML Fundamentals/GenAI)</td>
+                        <td>☁️❓ CLF-C02 Practice Exam (Full) - Review Incorrect Answers</td>
+                        <td>🤖📝 Review Day 9 & Quiz</td>
+                    </tr>
+                    <tr>
+                        <td>Day 10</td>
+                        <td>🤖📚 AIF-C01 Deep Dive: AWS AI Services Use Cases & Integrations</td>
+                        <td>🤖💡 AIF-C01 Lab: Service Integration Scenarios</td>
+                        <td>🤖📚 AIF-C01 Deep Dive: Data Governance for AI</td>
+                        <td>🤖📝 AIF-C01 Full Section Review (Responsible AI/AWS AI Services)</td>
+                        <td>☁️📚 CLF-C02 Review: Cloud Concepts & Billing</td>
+                        <td>🤖❓ AIF-C01 Practice Questions (Medium)</td>
+                        <td>☁️📝 Review Day 10 & Quiz</td>
+                    </tr>
+                    <tr>
+                        <td>Day 11</td>
+                        <td>☁️📚 CLF-C02 Weak Areas Focus (Based on Practice Exam)</td>
+                        <td>☁️💡 CLF-C02 Hands-on Practice (Targeted Labs)</td>
+                        <td>☁️❓ CLF-C02 Practice Questions (Hard)</td>
+                        <td>🤖📚 AIF-C01 Weak Areas Focus (Based on Practice Questions)</td>
+                        <td>🤖💡 AIF-C01 Hands-on Practice (Targeted Demos/Labs)</td>
+                        <td>🤖❓ AIF-C01 Practice Questions (Hard)</td>
+                        <td>☁️📝 Review Day 11 & Quiz</td>
+                    </tr>
+                    <tr>
+                        <td>Day 12</td>
+                        <td>☁️❓ **CLF-C02 Full Practice Exam**</td>
+                        <td>☁️📝 Review CLF-C02 Practice Exam (Detailed Analysis)</td>
+                        <td>🤖❓ **AIF-C01 Full Practice Exam**</td>
+                        <td>🤖📝 Review AIF-C01 Practice Exam (Detailed Analysis)</td>
+                        <td>☁️📚 CLF-C02 Quick Review of Key Concepts</td>
+                        <td>🤖📚 AIF-C01 Quick Review of Key Concepts</td>
+                        <td>📝 Self-Assessment & Plan for Remaining Days</td>
+                    </tr>
+                    <tr>
+                        <td>Day 13</td>
+                        <td>☁️📚 CLF-C02 Final Review: High-Yield Topics & FAQs</td>
+                        <td>☁️💡 CLF-C02 Last-Minute Tips & Tricks</td>
+                        <td>🤖📚 AIF-C01 Final Review: High-Yield Topics & FAQs</td>
+                        <td>🤖💡 AIF-C01 Last-Minute Tips & Tricks</td>
+                        <td>☁️❓ CLF-C02 Targeted Quizzes (Areas of Weakness)</td>
+                        <td>🤖❓ AIF-C01 Targeted Quizzes (Areas of Weakness)</td>
+                        <td>📝 General Review of Both Certs</td>
+                    </tr>
+                    <tr>
+                        <td>Day 14</td>
+                        <td>☁️❓ CLF-C02 Final Mock Exam (If needed, or focus on remaining weak areas)</td>
+                        <td>☁️📝 CLF-C02 Review of any remaining difficult topics</td>
+                        <td>🤖❓ AIF-C01 Final Mock Exam (If needed, or focus on remaining weak areas)</td>
+                        <td>🤖📝 AIF-C01 Review of any remaining difficult topics</td>
+                        <td>📚 Review all notes, flashcards for both certs</td>
+                        <td>📝 Light Review / Relax</td>
+                        <td>😴 Rest & Prepare for Exam Day</td>
+                    </tr>
+                    <tr>
+                        <td>Day 15</td>
+                        <td>📚 Quick Scan of Key Concepts (Both Certs)</td>
+                        <td>📚 Quick Scan of Key Concepts (Both Certs)</td>
+                        <td>📚 Quick Scan of Key Concepts (Both Certs)</td>
+                        <td>📚 Quick Scan of Key Concepts (Both Certs)</td>
+                        <td>📚 Quick Scan of Key Concepts (Both Certs)</td>
+                        <td>📚 Quick Scan of Key Concepts (Both Certs)</td>
+                        <td>🎉 **Exam Day (Optional - if scheduled)** / Relax & Recharge</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
+�

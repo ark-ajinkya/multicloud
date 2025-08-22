@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS Load Balancers: An Infographic</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <!-- NEITHER Mermaid JS NOR SVG were used in this output. Flowcharts and diagrams are implemented with structured HTML and CSS. -->
+    <!-- Color Palette: Brilliant Blues (#00A1E4, #00B8D4, #00C2C2, #00C8A7, #00CC88) -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111827;
+            color: #e5e7eb;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .flow-arrow {
+            position: relative;
+            width: 100%;
+            height: 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .flow-arrow::after {
+            content: '';
+            position: absolute;
+            border: solid #00A1E4;
+            border-width: 0 4px 4px 0;
+            display: inline-block;
+            padding: 8px;
+            transform: rotate(45deg);
+            -webkit-transform: rotate(45deg);
+        }
+        .kpi-card {
+            background-color: #1f2937;
+            border-left: 4px solid #00A1E4;
+        }
+        .section-title {
+            color: #FFFFFF;
+            font-weight: 900;
+            font-size: 2.25rem;
+            line-height: 2.5rem;
+        }
+        .section-subtitle {
+            font-size: 1.125rem;
+            line-height: 1.75rem;
+            color: #9ca3af;
+        }
+        .card {
+            background-color: #1f2937;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem;
+            border: 1px solid #374151;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
+
+        <header class="text-center my-12 md:my-20">
+            <h1 class="section-title tracking-tight">AWS Elastic Load Balancing</h1>
+            <p class="section-subtitle mt-4 max-w-3xl mx-auto">An interactive guide to automatically distributing your incoming application traffic across multiple targets, such as Amazon EC2 instances, containers, and IP addresses, for enhanced scalability and high availability.</p>
+        </header>
+
+        <main>
+            <section id="purpose" class="mb-16 md:mb-24">
+                <h2 class="section-title text-center mb-4">Core Purpose of a Load Balancer</h2>
+                <p class="section-subtitle text-center mb-12 max-w-3xl mx-auto">At its core, a load balancer serves as the "traffic cop" for your applications. It sits in front of your servers and routes client requests across all servers capable of fulfilling those requests in a manner that maximizes speed and capacity utilization and ensures that no one server is overworked.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div class="kpi-card p-6 rounded-lg">
+                        <h3 class="font-bold text-lg text-white mb-2">Traffic Distribution</h3>
+                        <p class="text-gray-400">Automatically distributes incoming traffic across multiple targets, like EC2 instances or containers.</p>
+                    </div>
+                    <div class="kpi-card p-6 rounded-lg">
+                        <h3 class="font-bold text-lg text-white mb-2">High Availability</h3>
+                        <p class="text-gray-400">Ensures no single point of failure by routing traffic only to healthy, operational targets.</p>
+                    </div>
+                    <div class="kpi-card p-6 rounded-lg">
+                        <h3 class="font-bold text-lg text-white mb-2">Scalability</h3>
+                        <p class="text-gray-400">Enables your application to scale resources up or down based on demand without manual intervention.</p>
+                    </div>
+                    <div class="kpi-card p-6 rounded-lg">
+                        <h3 class="font-bold text-lg text-white mb-2">Enhanced Security</h3>
+                        <p class="text-gray-400">Acts as a single, secure point of contact for external traffic, simplifying SSL/TLS management.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="alb" class="mb-16 md:mb-24">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-16 items-center">
+                    <div class="card order-2 md:order-1">
+                        <h3 class="font-bold text-2xl text-white mb-2">Application Load Balancer (ALB)</h3>
+                        <span class="inline-block bg-blue-500 text-white text-xs font-semibold mr-2 px-2.5 py-0.5 rounded-full">Layer 7</span>
+                        <p class="mt-4 mb-6">The Application Load Balancer is the ideal choice for modern applications that rely on HTTP and HTTPS traffic. It operates at the application layer (Layer 7), enabling it to make intelligent, content-based routing decisions. This means it can inspect the content of a request—such as the URL path, hostname, or HTTP headers—and direct the traffic to the appropriate backend service. This capability is essential for microservices architectures, where a single domain might serve many independent services.</p>
+                    </div>
+                    <div class="card order-1 md:order-2">
+                         <div class="chart-container">
+                            <canvas id="albChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="nlb" class="mb-16 md:mb-24">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-16 items-center">
+                     <div class="card">
+                        <div class="chart-container">
+                            <canvas id="nlbChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3 class="font-bold text-2xl text-white mb-2">Network Load Balancer (NLB)</h3>
+                        <span class="inline-block bg-teal-500 text-white text-xs font-semibold mr-2 px-2.5 py-0.5 rounded-full">Layer 4</span>
+                        <p class="mt-4 mb-6">When raw performance and ultra-low latency are paramount, the Network Load Balancer is the answer. Operating at the transport layer (Layer 4), it can handle millions of requests per second while maintaining a consistent performance profile. NLB is optimized for TCP, UDP, and TLS traffic where the destination is determined by IP address and port. A key feature is its ability to preserve the client-side source IP, which is critical for applications that need this information for logging, geolocation, or IP-based whitelisting.</p>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="glb" class="mb-16 md:mb-24">
+                <h2 class="section-title text-center mb-4">Gateway Load Balancer (GLB)</h2>
+                <p class="section-subtitle text-center mb-12 max-w-3xl mx-auto">The Gateway Load Balancer provides a unique service: it allows you to deploy, scale, and manage fleets of third-party virtual network appliances like firewalls, intrusion detection/prevention systems (IDS/IPS), and deep packet inspection systems in a transparent, highly available way.</p>
+                 <div class="card p-8">
+                     <h3 class="text-xl font-bold text-center text-white mb-8">Traffic Flow with GLB and Security Appliances</h3>
+                     <div class="flex flex-col items-center">
+                         <div class="text-center font-semibold text-lg p-4 rounded-lg bg-gray-800 w-64">Internet Traffic</div>
+                         <div class="flow-arrow"></div>
+                         <div class="text-center font-semibold text-lg p-4 rounded-lg bg-cyan-600 text-white w-64">Gateway Load Balancer</div>
+                         <div class="flow-arrow"></div>
+                         <p class="text-gray-400 italic my-2">Traffic is forwarded for inspection</p>
+                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 my-4 w-full max-w-4xl">
+                            <div class="text-center p-4 rounded-lg border-2 border-dashed border-sky-500">Firewall Appliance</div>
+                            <div class="text-center p-4 rounded-lg border-2 border-dashed border-sky-500">IDS/IPS Appliance</div>
+                            <div class="text-center p-4 rounded-lg border-2 border-dashed border-sky-500">Analytics Appliance</div>
+                         </div>
+                         <p class="text-gray-400 italic my-2">Inspected traffic returns to GLB</p>
+                         <div class="flow-arrow rotate-180"></div>
+                         <div class="text-center font-semibold text-lg p-4 rounded-lg bg-cyan-600 text-white w-64">Gateway Load Balancer</div>
+                         <div class="flow-arrow"></div>
+                         <div class="text-center font-semibold text-lg p-4 rounded-lg bg-gray-800 w-64">Application Targets (EC2)</div>
+                     </div>
+                 </div>
+            </section>
+
+            <section id="summary" class="mb-16 md:mb-24">
+                <h2 class="section-title text-center mb-12">Choosing the Right Load Balancer</h2>
+                <div class="overflow-x-auto">
+                    <div class="card p-0">
+                        <table class="w-full text-left">
+                            <thead class="text-xs text-gray-300 uppercase bg-gray-700/50">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3">Feature</th>
+                                    <th scope="col" class="px-6 py-3">Application (ALB)</th>
+                                    <th scope="col" class="px-6 py-3">Network (NLB)</th>
+                                    <th scope="col" class="px-6 py-3">Gateway (GLB)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b border-gray-700">
+                                    <th scope="row" class="px-6 py-4 font-medium text-white whitespace-nowrap">OSI Layer</th>
+                                    <td class="px-6 py-4">Layer 7 (HTTP/HTTPS)</td>
+                                    <td class="px-6 py-4">Layer 4 (TCP/UDP/TLS)</td>
+                                    <td class="px-6 py-4">Layer 3 (IP)</td>
+                                </tr>
+                                <tr class="border-b border-gray-700">
+                                    <th scope="row" class="px-6 py-4 font-medium text-white whitespace-nowrap">Best For</th>
+                                    <td class="px-6 py-4">Web apps, microservices</td>
+                                    <td class="px-6 py-4">High performance, low latency</td>
+                                    <td class="px-6 py-4">3rd party virtual appliances</td>
+                                </tr>
+                                <tr class="border-b border-gray-700">
+                                    <th scope="row" class="px-6 py-4 font-medium text-white whitespace-nowrap">Routing</th>
+                                    <td class="px-6 py-4">Content-based (path, host)</td>
+                                    <td class="px-6 py-4">Flow-based (IP, port)</td>
+                                    <td class="px-6 py-4">Transparent gateway</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" class="px-6 py-4 font-medium text-white whitespace-nowrap">IP Address</th>
+                                    <td class="px-6 py-4">Dynamic</td>
+                                    <td class="px-6 py-4">Static IP per AZ</td>
+                                    <td class="px-6 py-4">Uses GWLB Endpoints</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="text-center py-8 border-t border-gray-800">
+            <p class="text-gray-500">Infographic generated by Canvas Infographics.</p>
+        </footer>
+    </div>
+
+    <script>
+        const tooltipTitleCallback = {
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        title: function(tooltipItems) {
+                            const item = tooltipItems[0];
+                            let label = item.chart.data.labels[item.dataIndex];
+                            if (Array.isArray(label)) {
+                                return label.join(' ');
+                            } else {
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        const wrapLabel = (label, maxLength = 16) => {
+            if (label.length <= maxLength) return label;
+            const words = label.split(' ');
+            let lines = [];
+            let currentLine = '';
+            words.forEach(word => {
+                if ((currentLine + word).length > maxLength) {
+                    lines.push(currentLine.trim());
+                    currentLine = '';
+                }
+                currentLine += word + ' ';
+            });
+            lines.push(currentLine.trim());
+            return lines;
+        };
+
+        const albCtx = document.getElementById('albChart').getContext('2d');
+        new Chart(albCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Web Applications', 'Microservices Architecture', 'Container-Based Applications', 'Path-Based Routing'].map(l => wrapLabel(l)),
+                datasets: [{
+                    label: 'Suitability for Use Case',
+                    data: [95, 98, 92, 100],
+                    backgroundColor: ['#00A1E4', '#00B8D4', '#00C2C2', '#00C8A7'],
+                    borderColor: '#374151',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                ...tooltipTitleCallback,
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                        ticks: { color: '#9ca3af', font: { weight: '500' } }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#9ca3af', font: { weight: '500' } }
+                    }
+                },
+                plugins: {
+                    ...tooltipTitleCallback.plugins,
+                    legend: { display: false },
+                    title: {
+                        display: true,
+                        text: 'ALB Use Case Suitability',
+                        color: '#e5e7eb',
+                        font: { size: 16 }
+                    }
+                }
+            }
+        });
+
+        const nlbCtx = document.getElementById('nlbChart').getContext('2d');
+        new Chart(nlbCtx, {
+            type: 'radar',
+            data: {
+                labels: ['Extreme Performance', 'Ultra-Low Latency', 'Static IP Support', 'Preserves Client IP', 'TCP/UDP Handling'],
+                datasets: [{
+                    label: 'NLB Strengths',
+                    data: [95, 98, 100, 100, 90],
+                    fill: true,
+                    backgroundColor: 'rgba(0, 184, 212, 0.3)',
+                    borderColor: '#00B8D4',
+                    pointBackgroundColor: '#00B8D4',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: '#00B8D4'
+                }]
+            },
+            options: {
+                ...tooltipTitleCallback,
+                responsive: true,
+                maintainAspectRatio: false,
+                 scales: {
+                    r: {
+                        angleLines: { color: 'rgba(255, 255, 255, 0.1)' },
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                        pointLabels: { color: '#e5e7eb', font: { size: 12 } },
+                        ticks: {
+                            color: '#111827',
+                            backdropColor: 'rgba(255, 255, 255, 0.8)',
+                            backdropPadding: 4,
+                            borderRadius: 4,
+                        }
+                    }
+                },
+                plugins: {
+                     ...tooltipTitleCallback.plugins,
+                    legend: { display: false },
+                    title: {
+                        display: true,
+                        text: 'NLB Key Characteristics',
+                        color: '#e5e7eb',
+                        font: { size: 16 }
+                    }
+                }
+            }
+        });
+
+    </script>
+</body>
+</html>

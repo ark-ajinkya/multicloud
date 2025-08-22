@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infographic: Understanding AWS Regions & Availability Zones</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 320px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <div class="container mx-auto p-4 sm:p-6 md:p-8">
+
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-[#00A1E4] mb-2">The Backbone of the Cloud</h1>
+            <p class="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto">A visual guide to the core concepts of AWS Global Infrastructure: Regions and Availability Zones.</p>
+        </header>
+
+        <main class="space-y-12">
+
+            <section id="intro-stats" class="grid grid-cols-1 md:grid-cols-2 gap-8 text-center">
+                <div class="bg-white rounded-lg shadow-md p-8 flex flex-col justify-center items-center">
+                    <span class="text-7xl mb-2">🌍</span>
+                    <p class="text-2xl font-semibold text-slate-700">What is an AWS Region?</p>
+                    <p class="mt-2 text-slate-500">A Region is a physical, geographic area in the world where AWS clusters data centers. They are designed to be completely isolated from other AWS Regions for the greatest possible fault tolerance and stability.</p>
+                </div>
+                <div class="bg-white rounded-lg shadow-md p-8 flex flex-col justify-center items-center">
+                    <span class="text-7xl mb-2">🏢</span>
+                    <p class="text-2xl font-semibold text-slate-700">What is an Availability Zone?</p>
+                    <p class="mt-2 text-slate-500">An Availability Zone (AZ) is one or more discrete data centers with redundant power, networking, and connectivity within an AWS Region. Each AZ is physically separate, miles apart from others.</p>
+                </div>
+            </section>
+
+            <section id="relationship-diagram" class="bg-white rounded-lg shadow-lg p-6 md:p-8">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold text-[#00A1E4]">How They Work Together</h2>
+                    <p class="mt-2 text-slate-600 max-w-2xl mx-auto">An AWS Region contains multiple, isolated Availability Zones. This structure is the key to building highly available and fault-tolerant applications.</p>
+                </div>
+
+                <div class="border-4 border-[#00A1E4] rounded-xl p-4 md:p-6 bg-[#CAF0F8]/20">
+                    <h3 class="text-center text-2xl font-bold text-[#0077B6] mb-6">AWS REGION (e.g., us-east-1)</h3>
+                    <div class="flex flex-col md:flex-row justify-around items-stretch gap-4 md:gap-6">
+                        
+                        <div class="flex-1 border-2 border-dashed border-[#48CAE4] rounded-lg p-4 bg-white text-center flex flex-col">
+                            <h4 class="font-bold text-lg text-[#0096C7]">AVAILABILITY ZONE A</h4>
+                            <div class="flex-grow flex flex-col justify-center items-center gap-4 mt-4">
+                                <div class="w-full p-3 bg-slate-100 rounded-md shadow-sm">Data Center 1</div>
+                                <div class="w-full p-3 bg-slate-100 rounded-md shadow-sm">Data Center 2</div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center text-3xl text-[#00A1E4] font-bold rotate-90 md:rotate-0">
+                           ↔
+                        </div>
+
+                        <div class="flex-1 border-2 border-dashed border-[#48CAE4] rounded-lg p-4 bg-white text-center flex flex-col">
+                            <h4 class="font-bold text-lg text-[#0096C7]">AVAILABILITY ZONE B</h4>
+                            <div class="flex-grow flex flex-col justify-center items-center gap-4 mt-4">
+                                <div class="w-full p-3 bg-slate-100 rounded-md shadow-sm">Data Center 3</div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center text-3xl text-[#00A1E4] font-bold rotate-90 md:rotate-0">
+                           ↔
+                        </div>
+
+                        <div class="flex-1 border-2 border-dashed border-[#48CAE4] rounded-lg p-4 bg-white text-center flex flex-col">
+                            <h4 class="font-bold text-lg text-[#0096C7]">AVAILABILITY ZONE C</h4>
+                            <div class="flex-grow flex flex-col justify-center items-center gap-4 mt-4">
+                               <div class="w-full p-3 bg-slate-100 rounded-md shadow-sm">Data Center 4</div>
+                               <div class="w-full p-3 bg-slate-100 rounded-md shadow-sm">Data Center 5</div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <p class="text-center mt-6 text-sm text-slate-600 bg-[#ADE8F4]/50 p-3 rounded-md">All AZs within a Region are interconnected with high-bandwidth, low-latency networking.</p>
+                </div>
+            </section>
+
+            <section id="benefits" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-2xl font-bold text-center mb-4 text-slate-700">Achieving High Availability</h3>
+                    <p class="text-slate-600 text-center mb-6">By deploying applications across multiple AZs, you can protect them from single points of failure. The goal is to achieve near-perfect uptime.</p>
+                    <div class="chart-container">
+                        <canvas id="uptimeChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-2xl font-bold text-center mb-4 text-slate-700">Core Infrastructure Strengths</h3>
+                     <p class="text-slate-600 text-center mb-6">The Region/AZ model provides key advantages for building robust systems. This design ensures both resilience and performance.</p>
+                    <div class="chart-container">
+                        <canvas id="strengthsChart"></canvas>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="global-footprint" class="bg-white rounded-lg shadow-md p-6 md:p-8">
+                 <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold text-[#00A1E4]">Global Footprint Comparison</h2>
+                    <p class="mt-2 text-slate-600 max-w-2xl mx-auto">The number of Availability Zones varies by Region, reflecting the scale and demand in different parts of the world. More AZs provide greater flexibility for high-availability architectures.</p>
+                </div>
+                <div class="chart-container h-96 max-h-[450px]">
+                     <canvas id="azCountChart"></canvas>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        const brilliantBlues = ['#00A1E4', '#00B4D8', '#48CAE4', '#90E0EF', '#ADE8F4', '#CAF0F8'];
+        
+        function wrapLabel(str, maxWidth) {
+            if (str.length <= maxWidth) {
+                return str;
+            }
+            const words = str.split(' ');
+            let lines = [];
+            let currentLine = '';
+            for (const word of words) {
+                if ((currentLine + word).length > maxWidth) {
+                    lines.push(currentLine.trim());
+                    currentLine = '';
+                }
+                currentLine += word + ' ';
+            }
+            lines.push(currentLine.trim());
+            return lines;
+        }
+
+        const tooltipTitleCallback = (tooltipItems) => {
+            const item = tooltipItems[0];
+            let label = item.chart.data.labels[item.dataIndex];
+            return Array.isArray(label) ? label.join(' ') : label;
+        };
+
+        const commonChartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        color: '#475569',
+                        font: {
+                            size: 14,
+                        }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        title: tooltipTitleCallback
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { color: '#64748b' },
+                    grid: { color: '#e2e8f0' }
+                },
+                x: {
+                    ticks: { color: '#64748b' },
+                    grid: { display: false }
+                }
+            }
+        };
+
+        const uptimeCtx = document.getElementById('uptimeChart').getContext('2d');
+        new Chart(uptimeCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Target Uptime', 'Potential Downtime'],
+                datasets: [{
+                    label: 'Uptime SLA',
+                    data: [99.99, 0.01],
+                    backgroundColor: [brilliantBlues[1], brilliantBlues[4]],
+                    borderColor: ['#ffffff'],
+                    borderWidth: 4,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '70%',
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'bottom'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            title: tooltipTitleCallback,
+                            label: function(context) {
+                                return `${context.label}: ${context.raw}%`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        const strengthsCtx = document.getElementById('strengthsChart').getContext('2d');
+        new Chart(strengthsCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Fault Isolation', 'Low-Latency Interconnect', 'High-Throughput Networking'],
+                datasets: [{
+                    label: 'Strength Score (out of 10)',
+                    data: [10, 9, 9],
+                    backgroundColor: [brilliantBlues[0], brilliantBlues[2], brilliantBlues[3]],
+                    borderColor: [brilliantBlues[0], brilliantBlues[2], brilliantBlues[3]],
+                    borderWidth: 1,
+                    borderRadius: 5,
+                }]
+            },
+            options: {
+                ...commonChartOptions,
+                indexAxis: 'y',
+                plugins: {
+                    ...commonChartOptions.plugins,
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        ticks: { color: '#64748b' },
+                        grid: { display: false }
+                    },
+                    x: {
+                        beginAtZero: true,
+                        max: 10,
+                        ticks: { color: '#64748b' },
+                        grid: { color: '#e2e8f0' }
+                    }
+                }
+            }
+        });
+
+        const azCountCtx = document.getElementById('azCountChart').getContext('2d');
+        const azCountLabels = ['N. Virginia (us-east-1)', 'Ohio (us-east-2)', 'N. California (us-west-1)', 'Oregon (us-west-2)', 'Ireland (eu-west-1)', 'Tokyo (ap-northeast-1)'];
+        new Chart(azCountCtx, {
+            type: 'bar',
+            data: {
+                labels: azCountLabels.map(label => wrapLabel(label, 16)),
+                datasets: [{
+                    label: '# of Availability Zones',
+                    data: [6, 3, 3, 4, 3, 4],
+                    backgroundColor: brilliantBlues[1],
+                    borderColor: brilliantBlues[0],
+                    borderWidth: 2,
+                    borderRadius: 5,
+                }]
+            },
+            options: {
+                 ...commonChartOptions,
+                 plugins: {
+                    ...commonChartOptions.plugins,
+                    legend: {
+                        display: false
+                    }
+                 }
+            }
+        });
+    </script>
+</body>
+</html>

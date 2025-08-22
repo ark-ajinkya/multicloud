@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive AWS Region & Availability Zone Diagram</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chosen Palette: Slate & Sky -->
+    <!-- Application Structure Plan: A top-down, interactive diagram. The main view features a large container for the selected AWS Region, which in turn holds smaller containers for its Availability Zones (AZs). A dropdown control allows users to switch between different example Regions, dynamically updating the diagram. A dedicated information panel below the diagram provides context, updating with details when the user clicks on either the Region or an AZ. This structure was chosen because it visually mirrors the hierarchical one-to-many relationship, making the core concept intuitive. The interactive selection and detail-on-demand flow encourage exploration and active learning over passive reading. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: AWS Region contains multiple AZs.
+        - Goal: Organize, Inform, Relate.
+        - Viz/Presentation Method: Nested HTML `div` elements styled with Tailwind CSS to create a clear visual hierarchy (AZs inside Region). This directly represents the containment relationship.
+        - Interaction: A dropdown `<select>` element allows users to change the context (the AWS Region). `click` events on the Region and AZ `div`s update a text panel with contextual information from the source report.
+        - Justification: This approach is highly intuitive and requires no complex libraries. It turns a static concept into an engaging, explorable diagram.
+        - Library/Method: Vanilla JavaScript for all interaction logic and DOM manipulation. Tailwind CSS for styling.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .diagram-container {
+            position: relative;
+            width: 100%;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            height: auto;
+            min-height: 350px;
+        }
+        .az-box {
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
+        }
+        .az-box:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+        .region-box, .az-box {
+            border: 1px solid #e2e8f0;
+        }
+        .info-panel {
+            transition: background-color 0.3s ease;
+        }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <div class="container mx-auto p-4 sm:p-6 md:p-8">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-sky-800">AWS Global Infrastructure</h1>
+            <p class="mt-2 text-lg text-slate-600">An Interactive Guide to Regions and Availability Zones</p>
+        </header>
+
+        <main>
+            <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200">
+                <div class="flex flex-col sm:flex-row justify-between items-center mb-6">
+                    <p class="text-slate-700 mb-4 sm:mb-0">Select an AWS Region to explore:</p>
+                    <select id="regionSelector" class="w-full sm:w-auto p-2 border border-slate-300 rounded-md shadow-sm focus:ring-2 focus:ring-sky-500 focus:border-sky-500">
+                        <option value="us-east-1">US East (N. Virginia)</option>
+                        <option value="eu-west-2">Europe (London)</option>
+                        <option value="ap-south-1">Asia Pacific (Mumbai)</option>
+                        <option value="sa-east-1">South America (São Paulo)</option>
+                    </select>
+                </div>
+
+                <div id="diagramContainer" class="diagram-container">
+                    <div id="regionBox" class="region-box bg-sky-50 p-6 rounded-lg min-h-[350px] flex flex-col items-center justify-center transition-all duration-300 ease-in-out">
+                        <h2 id="regionName" class="text-2xl font-bold text-sky-700 mb-4"></h2>
+                        <div id="azContainer" class="flex flex-wrap justify-center items-start gap-4 md:gap-6 w-full">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="infoPanel" class="mt-8 bg-white p-6 rounded-xl shadow-md border border-slate-200">
+                <h3 id="infoTitle" class="text-xl font-bold text-sky-800 mb-2"></h3>
+                <p id="infoText" class="text-slate-600 leading-relaxed"></p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const awsData = {
+                "us-east-1": {
+                    name: "US East (N. Virginia)",
+                    azCount: 6,
+                    azPrefix: "use1-az",
+                    regionInfo: "An AWS Region is a physical location in the world where AWS clusters data centers. Each region is completely independent, isolated from other regions, and designed for high availability. Services are hosted within these regions, and you can choose a region to run your applications based on factors like latency, cost, and regulatory requirements.",
+                    azInfo: "An Availability Zone (AZ) is one or more discrete data centers with redundant power, networking, and connectivity within an AWS Region. AZs are physically separated by a meaningful distance from other AZs, yet close enough to have low-latency network connections. Deploying applications across multiple AZs is a primary strategy for achieving high availability and fault tolerance."
+                },
+                "eu-west-2": {
+                    name: "Europe (London)",
+                    azCount: 3,
+                    azPrefix: "euw2-az",
+                    regionInfo: "The Europe (London) region, like all AWS Regions, provides a separate geographic area for your services. It's designed to be completely isolated from other regions, ensuring the greatest possible fault tolerance and stability. Data residency requirements can be met by deploying resources exclusively within this region.",
+                    azInfo: "Within the London region, there are multiple Availability Zones. Each AZ has its own independent infrastructure to prevent a failure in one from affecting the others. This isolation is key to building resilient applications that can withstand data center-level outages without service interruption."
+                },
+                "ap-south-1": {
+                    name: "Asia Pacific (Mumbai)",
+                    azCount: 3,
+                    azPrefix: "aps1-az",
+                    regionInfo: "The Asia Pacific (Mumbai) region serves customers in India and the surrounding areas. It consists of multiple Availability Zones, providing a robust and fault-tolerant infrastructure. Using this region allows for low-latency access for end-users located in this part of the world.",
+                    azInfo: "Each Availability Zone in the Mumbai region is a fully isolated partition of the AWS infrastructure. They are interconnected with high-bandwidth, low-latency networking, allowing for synchronous replication and high-availability architectures for databases and applications."
+                },
+                "sa-east-1": {
+                    name: "South America (São Paulo)",
+                    azCount: 3,
+                    azPrefix: "sae1-az",
+                    regionInfo: "The South America (São Paulo) region is the primary AWS location in Latin America. It provides a fault-tolerant infrastructure spread across multiple isolated Availability Zones, enabling customers to build highly available applications for the South American market.",
+                    azInfo: "Availability Zones in the São Paulo region are physically distinct data centers. This separation ensures that a localized event like a fire, flood, or power outage affecting one AZ is unlikely to impact the others, forming the foundation of a resilient cloud strategy."
+                }
+            };
+
+            const regionSelector = document.getElementById('regionSelector');
+            const regionNameEl = document.getElementById('regionName');
+            const azContainer = document.getElementById('azContainer');
+            const infoTitleEl = document.getElementById('infoTitle');
+            const infoTextEl = document.getElementById('infoText');
+            const regionBox = document.getElementById('regionBox');
+
+            function updateInfoPanel(title, text) {
+                infoTitleEl.textContent = title;
+                infoTextEl.textContent = text;
+            }
+
+            function renderDiagram(regionKey) {
+                const regionData = awsData[regionKey];
+                
+                regionNameEl.textContent = regionData.name;
+                azContainer.innerHTML = '';
+
+                for (let i = 1; i <= regionData.azCount; i++) {
+                    const azBox = document.createElement('div');
+                    azBox.className = 'az-box bg-white p-4 rounded-lg shadow-sm text-center w-32 h-24 flex flex-col justify-center items-center';
+                    azBox.innerHTML = `
+                        <span class="text-3xl mb-1">🏢</span>
+                        <span class="font-semibold text-sm text-slate-700">${regionData.azPrefix}${i}</span>
+                    `;
+                    azBox.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        updateInfoPanel('About Availability Zones (AZs)', regionData.azInfo);
+                        document.querySelectorAll('.az-box').forEach(box => box.classList.remove('ring-2', 'ring-sky-500'));
+                        azBox.classList.add('ring-2', 'ring-sky-500');
+                        regionBox.classList.remove('ring-2', 'ring-sky-500');
+                    });
+                    azContainer.appendChild(azBox);
+                }
+                
+                updateInfoPanel('About AWS Regions', regionData.regionInfo);
+                regionBox.classList.add('ring-2', 'ring-sky-500');
+                document.querySelectorAll('.az-box').forEach(box => box.classList.remove('ring-2', 'ring-sky-500'));
+            }
+
+            regionSelector.addEventListener('change', (event) => {
+                renderDiagram(event.target.value);
+            });
+            
+            regionBox.addEventListener('click', () => {
+                const selectedRegion = regionSelector.value;
+                updateInfoPanel('About AWS Regions', awsData[selectedRegion].regionInfo);
+                regionBox.classList.add('ring-2', 'ring-sky-500');
+                document.querySelectorAll('.az-box').forEach(box => box.classList.remove('ring-2', 'ring-sky-500'));
+            });
+
+            renderDiagram(regionSelector.value);
+        });
+    </script>
+</body>
+</html>

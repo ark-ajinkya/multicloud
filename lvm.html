@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LVM in Linux – Interactive Diagram</title>
+  <style>
+    :root{
+      --bg: #0f1222;
+      --panel: #141833;
+      --ink: #e8ebff;
+      --muted: #b4b8d1;
+      --accent1: #6ea8fe;   /* PV */
+      --accent2: #8ce99a;   /* VG */
+      --accent3: #ffd43b;   /* LV */
+      --accent4: #ffa8a8;   /* FS */
+      --line: #6c72a3;
+      --ok: #3ad29f;
+      --warn: #ffb454;
+    }
+    @media (prefers-color-scheme: light){
+      :root{
+        --bg: #f5f7ff; --panel:#ffffff; --ink:#101320; --muted:#52607a;
+        --accent1:#2962ff; --accent2:#2fbf71; --accent3:#ea9a00; --accent4:#e25563; --line:#9aa5c3;
+      }
+    }
+    html,body{height:100%;}
+    body{
+      margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background: radial-gradient(1200px 600px at 70% -10%, #27306a33, transparent), var(--bg);
+      color:var(--ink);
+    }
+    .wrap{max-width:1200px; margin:40px auto; padding:24px;}
+
+    .header{display:flex; flex-wrap:wrap; align-items:center; gap:16px; justify-content:space-between;}
+    h1{font-size: clamp(24px, 4vw, 38px); margin:0; letter-spacing:0.2px}
+    .sub{color:var(--muted); max-width:70ch}
+
+    .panel{background:var(--panel); border:1px solid #ffffff14; box-shadow:0 10px 30px #00000030; border-radius:20px; padding:18px}
+
+    .controls{display:flex; flex-wrap:wrap; gap:8px}
+    .btn{
+      appearance:none; border:none; border-radius:14px; padding:10px 14px; cursor:pointer; font-weight:600;
+      background:#ffffff10; color:var(--ink); outline:none; backdrop-filter: blur(6px);
+      transition: transform .08s ease, background .2s ease;
+    }
+    .btn:hover{background:#ffffff18}
+    .btn:active{transform:translateY(1px)}
+    .btn[data-active="true"]{box-shadow:0 0 0 2px #ffffff30 inset}
+
+    .legend{display:flex; gap:14px; flex-wrap:wrap; align-items:center}
+    .chip{display:inline-flex; align-items:center; gap:8px; padding:8px 10px; border-radius:12px; background:#ffffff10; color:var(--muted); font-weight:600}
+    .dot{width:14px; height:14px; border-radius:50%}
+
+    .grid{display:grid; grid-template-columns:1.2fr 1fr; gap:18px; margin-top:18px}
+    @media (max-width:1000px){.grid{grid-template-columns:1fr}}
+
+    /* Tooltip */
+    .tooltip{position:fixed; pointer-events:none; z-index:5; transform:translate(-50%, calc(-100% - 14px));
+      background:#111428; color:#e6e9ff; padding:8px 10px; border-radius:10px; font-size:13px; border:1px solid #ffffff1a;
+      opacity:0; transition:opacity .12s ease; white-space:nowrap}
+    .tooltip.show{opacity:1}
+
+    /* Code blocks */
+    pre{background:#0e1126; color:#e6e9ff; border-radius:12px; padding:14px; overflow:auto; border:1px solid #ffffff12}
+    code{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}
+
+    /* Footer note */
+    .note{color:var(--muted); font-size:14px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="header">
+      <div>
+        <h1>Linux LVM — Visual Guide</h1>
+        <p class="sub">From physical storage to mounted filesystems. Hover any block to learn more; use the toggles to highlight layers. Colors map to stages of the LVM stack.</p>
+      </div>
+      <div class="controls panel">
+        <button class="btn" data-toggle="pv">Highlight PV</button>
+        <button class="btn" data-toggle="vg">Highlight VG</button>
+        <button class="btn" data-toggle="lv">Highlight LV</button>
+        <button class="btn" data-toggle="fs">Highlight FS/Mount</button>
+        <button class="btn" id="reset">Reset</button>
+      </div>
+    </div>
+
+    <div class="legend panel">
+      <span class="chip"><span class="dot" style="background:var(--accent1)"></span> PV (Physical Volume)</span>
+      <span class="chip"><span class="dot" style="background:var(--accent2)"></span> VG (Volume Group)</span>
+      <span class="chip"><span class="dot" style="background:var(--accent3)"></span> LV (Logical Volume)</span>
+      <span class="chip"><span class="dot" style="background:var(--accent4)"></span> FS / Mount</span>
+      <span class="chip"><span class="dot" style="background:var(--ok)"></span> Free / PEs</span>
+    </div>
+
+    <div class="grid">
+      <div class="panel">
+        <!-- Scalable, responsive SVG diagram -->
+        <svg id="lvm-svg" viewBox="0 0 1100 650" width="100%" height="auto" role="img" aria-label="LVM stack diagram">
+          <defs>
+            <linearGradient id="gloss" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stop-color="#ffffff20"/>
+              <stop offset="100%" stop-color="#ffffff04"/>
+            </linearGradient>
+            <marker id="arrow" markerWidth="10" markerHeight="10" refX="7" refY="5" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="var(--line)"></path>
+            </marker>
+            <style>
+              .blk{stroke:#ffffff20; stroke-width:1.5}
+              .title{font:700 14px/1 ui-sans-serif, system-ui; fill:var(--ink)}
+              .cap{font:600 12px/1 ui-sans-serif, system-ui; fill:var(--muted)}
+              .hint{font:600 12px/1 ui-sans-serif, system-ui; fill:var(--muted)}
+              .arrow{stroke:var(--line); stroke-width:2.2; marker-end:url(#arrow)}
+              .hl{filter: drop-shadow(0 0 0.6rem #ffffff66)}
+            </style>
+          </defs>
+
+          <!-- Row 1: Physical Disks -->
+          <g id="row-disks" transform="translate(20,20)">
+            <text x="0" y="-6" class="title">Physical Disks</text>
+            <g class="disk" data-layer="disk" data-tip="Physical drive or partition (e.g., /dev/sda, /dev/nvme0n1)">
+              <rect x="0" y="0" rx="12" ry="12" width="300" height="90" fill="#6c8cff33" class="blk"/>
+              <rect x="0" y="0" rx="12" ry="12" width="300" height="46" fill="url(#gloss)"/>
+              <text x="16" y="30" class="title">/dev/sda</text>
+              <text x="16" y="66" class="cap">1 TB SSD</text>
+            </g>
+            <g class="disk" transform="translate(330,0)" data-layer="disk" data-tip="Physical drive or partition (e.g., /dev/sdb)">
+              <rect x="0" y="0" rx="12" ry="12" width="300" height="90" fill="#6c8cff33" class="blk"/>
+              <rect x="0" y="0" rx="12" ry="12" width="300" height="46" fill="url(#gloss)"/>
+              <text x="16" y="30" class="title">/dev/sdb</text>
+              <text x="16" y="66" class="cap">2 TB HDD</text>
+            </g>
+            <g class="disk" transform="translate(660,0)" data-layer="disk" data-tip="Physical drive or partition (e.g., /dev/sdc)">
+              <rect x="0" y="0" rx="12" ry="12" width="300" height="90" fill="#6c8cff33" class="blk"/>
+              <rect x="0" y="0" rx="12" ry="12" width="300" height="46" fill="url(#gloss)"/>
+              <text x="16" y="30" class="title">/dev/sdc</text>
+              <text x="16" y="66" class="cap">500 GB SSD</text>
+            </g>
+          </g>
+
+          <!-- arrows down to PVs -->
+          <g transform="translate(170,125)">
+            <line x1="0" y1="0" x2="0" y2="30" class="arrow"/>
+          </g>
+          <g transform="translate(500,125)">
+            <line x1="0" y1="0" x2="0" y2="30" class="arrow"/>
+          </g>
+          <g transform="translate(830,125)">
+            <line x1="0" y1="0" x2="0" y2="30" class="arrow"/>
+          </g>
+
+          <!-- Row 2: Physical Volumes (PVs) -->
+          <g id="row-pv" transform="translate(20,170)">
+            <text x="0" y="-6" class="title">Physical Volumes (PVs)</text>
+            <g class="pv hoverable" data-layer="pv" data-tip="\u2022 lvm pv on a block device\n\u2022 Contains Physical Extents (PEs)\n\u2022 Created with: pvcreate /dev/sdX">
+              <rect x="0" y="0" rx="12" ry="12" width="300" height="80" fill="var(--accent1)" opacity=".18" class="blk"/>
+              <!-- PE stripes -->
+              <g transform="translate(8,8)">
+                <rect width="284" height="64" rx="8" fill="#ffffff07"/>
+                <rect width="90" height="64" rx="8" fill="#ffffff10"/>
+                <rect x="96" width="60" height="64" rx="8" fill="#ffffff03"/>
+                <rect x="160" width="60" height="64" rx="8" fill="#ffffff10"/>
+                <rect x="224" width="60" height="64" rx="8" fill="#ffffff03"/>
+              </g>
+              <text x="16" y="30" class="title">PV on /dev/sda</text>
+              <text x="16" y="58" class="cap">PE size: 4 MiB</text>
+            </g>
+            <g class="pv hoverable" transform="translate(330,0)" data-layer="pv" data-tip="Multiple PVs can be added to the same Volume Group to expand capacity.">
+              <rect x="0" y="0" rx="12" ry="12" width="300" height="80" fill="var(--accent1)" opacity=".18" class="blk"/>
+              <g transform="translate(8,8)">
+                <rect width="284" height="64" rx="8" fill="#ffffff07"/>
+                <rect width="50" height="64" rx="8" fill="#ffffff10"/>
+                <rect x="56" width="90" height="64" rx="8" fill="#ffffff03"/>
+                <rect x="150" width="120" height="64" rx="8" fill="#ffffff10"/>
+              </g>
+              <text x="16" y="30" class="title">PV on /dev/sdb</text>
+              <text x="16" y="58" class="cap">PE size: 4 MiB</text>
+            </g>
+            <g class="pv hoverable" transform="translate(660,0)" data-layer="pv" data-tip="PVs contribute extents to a Volume Group (VG).">
+              <rect x="0" y="0" rx="12" ry="12" width="300" height="80" fill="var(--accent1)" opacity=".18" class="blk"/>
+              <g transform="translate(8,8)">
+                <rect width="284" height="64" rx="8" fill="#ffffff07"/>
+                <rect width="70" height="64" rx="8" fill="#ffffff10"/>
+                <rect x="76" width="208" height="64" rx="8" fill="#ffffff03"/>
+              </g>
+              <text x="16" y="30" class="title">PV on /dev/sdc</text>
+              <text x="16" y="58" class="cap">PE size: 4 MiB</text>
+            </g>
+          </g>
+
+          <!-- Arrow to VG container -->
+          <g transform="translate(170,255)">
+            <line x1="0" y1="0" x2="0" y2="30" class="arrow"/>
+          </g>
+          <g transform="translate(500,255)">
+            <line x1="0" y1="0" x2="0" y2="30" class="arrow"/>
+          </g>
+          <g transform="translate(830,255)">
+            <line x1="0" y1="0" x2="0" y2="30" class="arrow"/>
+          </g>
+
+          <!-- Row 3: Volume Group (container spanning full width) -->
+          <g id="row-vg" transform="translate(20,300)">
+            <text x="0" y="-6" class="title">Volume Group (VG)</text>
+            <g class="vg hoverable" data-layer="vg" data-tip="\u2022 Pool of extents aggregated from PVs\n\u2022 Created with: vgcreate vg0 /dev/sd[abc]1\n\u2022 Extend: vgextend vg0 /dev/sdd1">
+              <rect x="0" y="0" rx="16" ry="16" width="1040" height="140" fill="var(--accent2)" opacity=".16" class="blk"/>
+              <!-- show free space and used -->
+              <rect x="10" y="12" rx="10" ry="10" width="860" height="116" fill="#ffffff07"/>
+              <rect x="10" y="12" rx="10" ry="10" width="700" height="116" fill="#ffffff12"/>
+              <text x="20" y="36" class="cap">Pooled capacity from PVs</text>
+              <text x="20" y="62" class="title">vg0</text>
+              <text x="20" y="100" class="cap">Free: <tspan fill="var(--ok)">160 GiB</tspan> | Used: 1.3 TiB</text>
+            </g>
+          </g>
+
+          <!-- Arrow to LVs -->
+          <g transform="translate(540,442)">
+            <line x1="0" y1="0" x2="0" y2="30" class="arrow"/>
+          </g>
+
+          <!-- Row 4: Logical Volumes -->
+          <g id="row-lv" transform="translate(20,480)">
+            <text x="0" y="-6" class="title">Logical Volumes (LVs)</text>
+            <g class="lv hoverable" data-layer="lv" data-tip="\u2022 Thin-provisioned or classic LVs\n\u2022 Create: lvcreate -n lv_root -L 60G vg0\n\u2022 Resize: lvresize -r -L +20G vg0/lv_root">
+              <rect x="0" y="0" rx="12" ry="12" width="380" height="110" fill="var(--accent3)" opacity=".2" class="blk"/>
+              <text x="16" y="34" class="title">vg0/lv_root</text>
+              <text x="16" y="62" class="cap">Size: 80 GiB (ext4)</text>
+              <text x="16" y="88" class="cap">Mount: /</text>
+            </g>
+            <g class="lv hoverable" transform="translate(400,0)" data-layer="lv" data-tip="\u2022 Striped LV for performance\n\u2022 Filesystem can be xfs, ext4, btrfs\n\u2022 Snapshot: lvcreate -s -n snap_home -L 10G vg0/lv_home">
+              <rect x="0" y="0" rx="12" ry="12" width="320" height="110" fill="var(--accent3)" opacity=".2" class="blk"/>
+              <text x="16" y="34" class="title">vg0/lv_home</text>
+              <text x="16" y="62" class="cap">Size: 600 GiB (xfs)</text>
+              <text x="16" y="88" class="cap">Mount: /home</text>
+            </g>
+            <g class="lv hoverable" transform="translate(730,0)" data-layer="lv" data-tip="\u2022 LV for swap space\n\u2022 mkswap /dev/vg0/lv_swap && swapon">
+              <rect x="0" y="0" rx="12" ry="12" width="330" height="110" fill="var(--accent3)" opacity=".2" class="blk"/>
+              <text x="16" y="34" class="title">vg0/lv_swap</text>
+              <text x="16" y="62" class="cap">Size: 16 GiB</text>
+              <text x="16" y="88" class="cap">Type: swap</text>
+            </g>
+          </g>
+
+          <!-- Arrows to Filesystems & Mounts -->
+          <g transform="translate(210,592)"><line x1="0" y1="0" x2="0" y2="28" class="arrow"/></g>
+          <g transform="translate(560,592)"><line x1="0" y1="0" x2="0" y2="28" class="arrow"/></g>
+          <g transform="translate(895,592)"><line x1="0" y1="0" x2="0" y2="28" class="arrow"/></g>
+
+          <!-- Row 5: Filesystems & Mounts -->
+          <g id="row-fs" transform="translate(20,625)">
+            <g class="fs hoverable" data-layer="fs" data-tip="mkfs.ext4 /dev/vg0/lv_root\nAdd to /etc/fstab and mount at /">
+              <rect x="0" y="0" rx="12" ry="12" width="380" height="80" fill="var(--accent4)" opacity=".18" class="blk"/>
+              <text x="16" y="34" class="title">ext4 on lv_root</text>
+              <text x="16" y="62" class="cap">Mounted at /</text>
+            </g>
+            <g class="fs hoverable" transform="translate(400,0)" data-layer="fs" data-tip="mkfs.xfs /dev/vg0/lv_home\nMount at /home">
+              <rect x="0" y="0" rx="12" ry="12" width="320" height="80" fill="var(--accent4)" opacity=".18" class="blk"/>
+              <text x="16" y="34" class="title">xfs on lv_home</text>
+              <text x="16" y="62" class="cap">Mounted at /home</text>
+            </g>
+            <g class="fs hoverable" transform="translate(730,0)" data-layer="fs" data-tip="Swap space from LV\nswapon --show">
+              <rect x="0" y="0" rx="12" ry="12" width="330" height="80" fill="var(--accent4)" opacity=".18" class="blk"/>
+              <text x="16" y="34" class="title">swap on lv_swap</text>
+              <text x="16" y="62" class="cap">Active</text>
+            </g>
+          </g>
+        </svg>
+        <div id="tooltip" class="tooltip" role="status" aria-live="polite"></div>
+      </div>
+
+      <div class="panel">
+        <h2 style="margin-top:0">Cheat Sheet</h2>
+        <p class="note">A realistic sequence for setting up LVM on fresh disks. Commands assume devices <code>/dev/sda</code>, <code>/dev/sdb</code>, <code>/dev/sdc</code> and a PE size of 4 MiB (default).</p>
+
+        <ol>
+          <li><strong>Partition (optional but recommended):</strong>
+            <pre><code>parted /dev/sda -- mklabel gpt mkpart primary 1MiB 100% set 1 lvm on
+parted /dev/sdb -- mklabel gpt mkpart primary 1MiB 100% set 1 lvm on
+parted /dev/sdc -- mklabel gpt mkpart primary 1MiB 100% set 1 lvm on</code></pre>
+          </li>
+          <li><strong>Create PVs:</strong>
+            <pre><code>pvcreate /dev/sda1 /dev/sdb1 /dev/sdc1
+pvs -o +pv_pe_count,pv_pe_alloc_count</code></pre>
+          </li>
+          <li><strong>Create a VG and add PVs:</strong>
+            <pre><code>vgcreate vg0 /dev/sda1
+vgextend vg0 /dev/sdb1 /dev/sdc1
+vgs -o +vg_free,vg_extent_size</code></pre>
+          </li>
+          <li><strong>Create LVs:</strong>
+            <pre><code>lvcreate -n lv_root -L 80G vg0
+lvcreate -n lv_home -L 600G vg0
+lvcreate -n lv_swap -L 16G vg0
+lvs -o +lv_size,seg_size,segtype</code></pre>
+          </li>
+          <li><strong>Make filesystems and activate swap:</strong>
+            <pre><code>mkfs.ext4 /dev/vg0/lv_root
+mkfs.xfs  /dev/vg0/lv_home
+mkswap     /dev/vg0/lv_swap && swapon /dev/vg0/lv_swap</code></pre>
+          </li>
+          <li><strong>Mount and persist:</strong>
+            <pre><code>mount /dev/vg0/lv_root /mnt
+mkdir -p /mnt/home
+mount /dev/vg0/lv_home /mnt/home
+blkid /dev/vg0/*  # get UUIDs and add to /etc/fstab</code></pre>
+          </li>
+          <li><strong>Resize examples (online when supported):</strong>
+            <pre><code># Grow VG with a new disk
+pvcreate /dev/sdd1 && vgextend vg0 /dev/sdd1
+
+# Extend LV and filesystem together (ext4/xfs online grow)
+lvresize -r -L +100G vg0/lv_home
+
+# Shrink ext4 (requires offline fsck)
+umount /home && e2fsck -f /dev/vg0/lv_home && resize2fs /dev/vg0/lv_home 500G
+lvreduce -L 500G vg0/lv_home && mount /home</code></pre>
+          </li>
+          <li><strong>Snapshots & thin provisioning:</strong>
+            <pre><code># Classic snapshot
+lvcreate -s -n snap_home -L 20G vg0/lv_home
+
+# Thin pool and thin LV
+lvcreate -L 1T -T vg0/pool0      # thin pool
+lvcreate -V 600G -T vg0/pool0 -n thin_home  # thin LV
+mkfs.xfs /dev/vg0/thin_home</code></pre>
+          </li>
+        </ol>
+
+        <h3>Concepts</h3>
+        <ul>
+          <li><strong>PE (Physical Extent):</strong> smallest allocation unit inside a VG (default 4 MiB). LVs are composed of <em>LEs</em> that map to PEs.</li>
+          <li><strong>Striping/Mirroring:</strong> <code>--stripes</code>, <code>--mirrors</code> options on <code>lvcreate</code> for performance or redundancy (not a RAID replacement, but can emulate levels).</li>
+          <li><strong>Metadata:</strong> VG/LV metadata lives on PVs; keep backups via <code>vgcfgbackup</code> and view with <code>vgcfgrestore -l</code>.</li>
+          <li><strong>Device-mapper:</strong> LVM uses the kernel device-mapper; LVs appear as <code>/dev/mapper/vg-lv</code>.</li>
+        </ul>
+
+        <p class="note">Tip: Use <code>lsblk</code>, <code>pvs</code>, <code>vgs</code>, and <code>lvs</code> to visualize your current topology.</p>
+      </div>
+    </div>
+
+    <p class="note" style="margin-top:18px">You can save this page (Ctrl/Cmd+S) and open locally. It is fully self‑contained; no internet required.</p>
+  </div>
+
+  <script>
+    // Tooltip logic
+    const tip = document.getElementById('tooltip');
+    const svg = document.getElementById('lvm-svg');
+    const hoverables = svg.querySelectorAll('.hoverable');
+
+    function showTip(evt, text){
+      tip.textContent = text;
+      tip.style.left = (evt.clientX) + 'px';
+      tip.style.top  = (evt.clientY) + 'px';
+      tip.classList.add('show');
+    }
+    function hideTip(){ tip.classList.remove('show'); }
+
+    hoverables.forEach(el=>{
+      el.addEventListener('mousemove', e=>showTip(e, el.dataset.tip));
+      el.addEventListener('mouseleave', hideTip);
+    });
+
+    // Highlight toggles
+    const buttons = document.querySelectorAll('[data-toggle]');
+    const resetBtn = document.getElementById('reset');
+
+    function setHighlight(layer){
+      // clear existing
+      svg.querySelectorAll('.hl').forEach(n=>n.classList.remove('hl'));
+      buttons.forEach(b=>b.dataset.active = 'false');
+
+      if(!layer) return; // only reset
+
+      document.querySelector(`[data-toggle="${layer}"]`).dataset.active = 'true';
+      svg.querySelectorAll(`[data-layer="${layer}"]`).forEach(n=>n.classList.add('hl'));
+    }
+
+    buttons.forEach(btn=>{
+      btn.addEventListener('click', ()=> setHighlight(btn.dataset.toggle));
+    });
+    resetBtn.addEventListener('click', ()=> setHighlight(null));
+  </script>
+</body>
+</html>

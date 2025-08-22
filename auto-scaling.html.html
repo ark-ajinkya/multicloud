@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive AWS Auto Scaling Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm & Welcoming (#F5F5F5, #4A4A4A, #E67E22) -->
+    <!-- Application Structure Plan: The SPA is designed to guide the user from the 'Why' to the 'What' and 'How' of Auto Scaling. It starts with high-level benefits to establish value. Then, it uses an interactive diagram for the 'Anatomy' section to explain core components, making learning active rather than passive. The centerpiece is the 'Scaling in Action' dashboard, a simulation that lets users see the direct impact of different scaling policies on resources, which is more effective than static descriptions. The final section provides actionable checklists for creation and maintenance. This structure prioritizes conceptual understanding and engagement over a linear replication of the source report. -->
+    <!-- Visualization & Content Choices: 
+        - Benefits Section: Goal: Inform. Method: Styled HTML cards with Unicode characters. Interaction: Hover effects. Justification: Quickly communicates value propositions in a visually appealing, non-SVG format.
+        - Anatomy Diagram: Goal: Organize/Inform. Method: HTML divs styled with Tailwind to create a flowchart. Interaction: Clicking a component reveals its definition. Justification: Transforms a list of terms into an interactive learning tool, showing relationships.
+        - Scaling Dashboard: Goal: Compare/Change. Method: Chart.js Line/Bar combo chart. Interaction: Buttons to switch policies and update chart data. Justification: Provides a dynamic simulation, which is the most effective way to teach the cause-and-effect nature of scaling policies.
+        - Blueprint Checklists: Goal: Organize. Method: Styled HTML lists. Justification: Presents procedural steps in a clear, easy-to-digest format.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F5F5F5;
+            color: #4A4A4A;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 450px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .benefit-card, .anatomy-component, .policy-button, .blueprint-card {
+            transition: all 0.3s ease-in-out;
+        }
+        .benefit-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+        }
+        .anatomy-component {
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        .anatomy-component:hover, .anatomy-component.active {
+            border-color: #E67E22;
+            transform: scale(1.05);
+        }
+        .policy-button.active {
+            background-color: #E67E22;
+            color: white;
+            box-shadow: 0 4px 14px 0 rgba(230, 126, 34, 0.39);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="text-center py-12 px-4 bg-white">
+        <h1 class="text-4xl md:text-5xl font-bold text-[#4A4A4A]">The Interactive Guide to AWS Auto Scaling</h1>
+        <p class="text-lg md:text-xl text-[#E67E22] mt-2 font-semibold">Master the cloud's most powerful tool for efficiency and resilience.</p>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-8">
+        
+        <section id="why" class="mb-16">
+            <h2 class="text-3xl font-bold text-center mb-8">Why Use Auto Scaling? The Core Benefits</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="benefit-card bg-white p-6 rounded-lg shadow-md text-center">
+                    <div class="text-5xl mb-4">🛡️</div>
+                    <h3 class="text-xl font-bold mb-2">Fault Tolerance</h3>
+                    <p>Automatically detects and replaces unhealthy instances, ensuring your application remains available and resilient against failures.</p>
+                </div>
+                <div class="benefit-card bg-white p-6 rounded-lg shadow-md text-center">
+                    <div class="text-5xl mb-4">💰</div>
+                    <h3 class="text-xl font-bold mb-2">Cost Efficiency</h3>
+                    <p>Dynamically scales your resources to match demand, so you only pay for the capacity you actually need, eliminating waste.</p>
+                </div>
+                <div class="benefit-card bg-white p-6 rounded-lg shadow-md text-center">
+                    <div class="text-5xl mb-4">⚡</div>
+                    <h3 class="text-xl font-bold mb-2">High Availability</h3>
+                    <p>Maintains the perfect number of instances to handle your application's load, guaranteeing consistent performance even during traffic spikes.</p>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-16 border-gray-300">
+
+        <section id="what" class="mb-16">
+            <h2 class="text-3xl font-bold text-center mb-2">What is an Auto Scaling Group?</h2>
+            <p class="text-center text-lg mb-8 text-gray-600">Click on a component below to understand its role in the ecosystem.</p>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+                <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow-md">
+                    <div class="flex flex-col items-center space-y-4">
+                        <div id="comp-template" class="anatomy-component bg-orange-100 p-3 rounded-lg shadow w-3/4 text-center">
+                            <h4 class="font-bold">1. Launch Template</h4>
+                            <p class="text-sm">The Instance Blueprint</p>
+                        </div>
+                        <div class="text-2xl font-bold text-gray-400">↓</div>
+                        <div id="comp-asg" class="anatomy-component bg-blue-100 p-4 rounded-lg shadow w-full text-center">
+                            <h4 class="font-bold">2. Auto Scaling Group (ASG)</h4>
+                            <p class="text-sm">The Group Manager</p>
+                            <div class="flex justify-around items-center mt-4">
+                                <div class="text-center">
+                                    <p class="font-bold text-green-600">Min</p>
+                                    <p>2</p>
+                                </div>
+                                <div class="text-center">
+                                    <p class="font-bold text-blue-600">Desired</p>
+                                    <p>3</p>
+                                </div>
+                                <div class="text-center">
+                                    <p class="font-bold text-red-600">Max</p>
+                                    <p>10</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex w-full justify-around">
+                             <div class="text-2xl font-bold text-gray-400">↙</div>
+                             <div class="text-2xl font-bold text-gray-400">↘</div>
+                        </div>
+                        <div class="flex w-full justify-around text-center">
+                            <div id="comp-policy" class="anatomy-component bg-purple-100 p-3 rounded-lg shadow w-5/12">
+                                <h4 class="font-bold">3. Scaling Policy</h4>
+                                <p class="text-sm">The Rules</p>
+                            </div>
+                            <div id="comp-health" class="anatomy-component bg-teal-100 p-3 rounded-lg shadow w-5/12">
+                                <h4 class="font-bold">4. Health Checks</h4>
+                                <p class="text-sm">The Monitor</p>
+                            </div>
+                        </div>
+                        <div class="text-2xl font-bold text-gray-400">↓</div>
+                        <div id="comp-elb" class="anatomy-component bg-indigo-100 p-3 rounded-lg shadow w-3/4 text-center">
+                             <h4 class="font-bold">5. Load Balancer</h4>
+                             <p class="text-sm">The Traffic Director</p>
+                        </div>
+                    </div>
+                </div>
+                <div id="definition-box" class="bg-white p-6 rounded-lg shadow-md sticky top-8">
+                    <h3 id="definition-title" class="text-xl font-bold text-[#E67E22] mb-2">Anatomy Lesson</h3>
+                    <p id="definition-text" class="text-gray-700">This is the core of AWS Auto Scaling. An ASG is a collection of EC2 instances treated as a logical group for scaling and management. It's the manager that hires or fires instances based on rules.</p>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-16 border-gray-300">
+
+        <section id="how" class="mb-16">
+            <h2 class="text-3xl font-bold text-center mb-2">How it Works: Scaling in Action</h2>
+            <p class="text-center text-lg mb-8 text-gray-600">Select a scaling policy to see how the system responds to changing demand.</p>
+            <div class="text-center mb-8 space-x-2">
+                <button id="btn-target" class="policy-button bg-white px-4 py-2 rounded-full shadow font-semibold active">Target Tracking</button>
+                <button id="btn-scheduled" class="policy-button bg-white px-4 py-2 rounded-full shadow font-semibold">Scheduled</button>
+            </div>
+            <div class="bg-white p-4 md:p-6 rounded-lg shadow-xl">
+                <div class="chart-container">
+                    <canvas id="scalingChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-16 border-gray-300">
+
+        <section id="blueprint">
+            <h2 class="text-3xl font-bold text-center mb-8">Your Blueprint for Success</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="blueprint-card bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-2xl font-bold text-[#E67E22] mb-4">Creating Your First Plan</h3>
+                    <ul class="space-y-3 list-inside">
+                        <li class="flex items-start"><span class="mr-2 text-[#E67E22] font-bold">1.</span> <span><b>Define Workload:</b> Identify the application component that needs to scale (e.g., web servers).</span></li>
+                        <li class="flex items-start"><span class="mr-2 text-[#E67E22] font-bold">2.</span> <span><b>Create Launch Template:</b> Build the blueprint for your instances (AMI, type, security).</span></li>
+                        <li class="flex items-start"><span class="mr-2 text-[#E67E22] font-bold">3.</span> <span><b>Configure ASG:</b> Set min, max, and desired capacity across multiple Availability Zones.</span></li>
+                        <li class="flex items-start"><span class="mr-2 text-[#E67E22] font-bold">4.</span> <span><b>Attach Load Balancer:</b> Distribute traffic evenly across your instances.</span></li>
+                        <li class="flex items-start"><span class="mr-2 text-[#E67E22] font-bold">5.</span> <span><b>Set Scaling Policies:</b> Define the rules for scaling out and in (e.g., target CPU at 60%).</span></li>
+                        <li class="flex items-start"><span class="mr-2 text-[#E67E22] font-bold">6.</span> <span><b>Monitor & Adjust:</b> Use CloudWatch to observe performance and fine-tune your policies.</span></li>
+                    </ul>
+                </div>
+                <div class="blueprint-card bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-2xl font-bold text-[#4A4A4A] mb-4">Maintaining Your Plan</h3>
+                    <ul class="space-y-3 list-inside">
+                        <li class="flex items-start"><span class="mr-2 text-[#4A4A4A] font-bold">✓</span> <span><b>Regularly Monitor:</b> Review CloudWatch alarms and scaling history to ensure correct behavior.</span></li>
+                        <li class="flex items-start"><span class="mr-2 text-[#4A4A4A] font-bold">✓</span> <span><b>Update Launch Templates:</b> Keep your AMIs and software up-to-date with security patches.</span></li>
+                        <li class="flex items-start"><span class="mr-2 text-[#4A4A4A] font-bold">✓</span> <span><b>Review Policies:</b> As traffic patterns change, adjust your target values or schedules.</span></li>
+                        <li class="flex items-start"><span class="mr-2 text-[#4A4A4A] font-bold">✓</span> <span><b>Perform Load Tests:</b> Periodically test your setup to verify it scales correctly under stress.</span></li>
+                        <li class="flex items-start"><span class="mr-2 text-[#4A4A4A] font-bold">✓</span> <span><b>Optimize Costs:</b> Consider Spot Instances for non-critical workloads and Savings Plans for baseline capacity.</span></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="text-center mt-16 py-8 border-t border-gray-200">
+        <p class="text-gray-500">An Interactive Guide by Your Cloud Mentor</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            const definitions = {
+                'comp-asg': {
+                    title: 'Auto Scaling Group (ASG)',
+                    text: "This is the core of AWS Auto Scaling. An ASG is a collection of EC2 instances treated as a logical group for scaling and management. It's the manager that hires or fires instances based on rules."
+                },
+                'comp-template': {
+                    title: 'Launch Template',
+                    text: 'This is the blueprint for your EC2 instances. It specifies the instance type, AMI, security groups, and other configuration details the ASG uses to launch new instances.'
+                },
+                'comp-policy': {
+                    title: 'Scaling Policy',
+                    text: 'These are the rules that tell your ASG when and how to scale. For example, a rule could be "add two instances if average CPU utilization is over 70% for 5 minutes."'
+                },
+                'comp-health': {
+                    title: 'Health Checks',
+                    text: 'These are mechanisms the ASG uses to monitor the health of its instances. If an instance fails a health check, the ASG terminates it and launches a replacement.'
+                },
+                'comp-elb': {
+                    title: 'Load Balancer',
+                    text: 'An ELB distributes incoming application traffic across multiple instances in the ASG. This improves availability and fault tolerance.'
+                }
+            };
+
+            const definitionTitle = document.getElementById('definition-title');
+            const definitionText = document.getElementById('definition-text');
+            const components = document.querySelectorAll('.anatomy-component');
+
+            components.forEach(comp => {
+                comp.addEventListener('click', () => {
+                    components.forEach(c => c.classList.remove('active'));
+                    comp.classList.add('active');
+                    const id = comp.id;
+                    if (definitions[id]) {
+                        definitionTitle.textContent = definitions[id].title;
+                        definitionText.textContent = definitions[id].text;
+                    }
+                });
+            });
+
+            const tooltipTitleCallback = (tooltipItems) => {
+                const item = tooltipItems[0];
+                let label = item.chart.data.labels[item.dataIndex];
+                if (Array.isArray(label)) {
+                    return label.join(' ');
+                }
+                return label;
+            };
+
+            const chartLabels = ['12AM', '2AM', '4AM', '6AM', '8AM', '10AM', '12PM', '2PM', '4PM', '6PM', '8PM', '10PM'];
+            
+            const targetTrackingData = {
+                cpu: [15, 12, 18, 30, 75, 85, 80, 65, 50, 45, 30, 20],
+                instances: [2, 2, 2, 2, 4, 5, 5, 4, 3, 3, 2, 2],
+                targetLine: Array(12).fill(60)
+            };
+
+            const scheduledData = {
+                cpu: [20, 15, 25, 40, 55, 60, 50, 45, 80, 85, 50, 30],
+                instances: [3, 3, 3, 3, 6, 6, 6, 6, 10, 10, 10, 3],
+                targetLine: []
+            };
+
+            const ctx = document.getElementById('scalingChart').getContext('2d');
+            const scalingChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: chartLabels,
+                    datasets: [
+                        {
+                            type: 'line',
+                            label: 'Avg CPU Utilization (%)',
+                            data: targetTrackingData.cpu,
+                            borderColor: '#E67E22',
+                            backgroundColor: 'rgba(230, 126, 34, 0.1)',
+                            yAxisID: 'y1',
+                            tension: 0.4,
+                            fill: true
+                        },
+                        {
+                            label: 'Active Instances',
+                            data: targetTrackingData.instances,
+                            backgroundColor: 'rgba(74, 74, 74, 0.2)',
+                            borderColor: '#4A4A4A',
+                            yAxisID: 'y',
+                        },
+                        {
+                            type: 'line',
+                            label: 'CPU Target',
+                            data: targetTrackingData.targetLine,
+                            borderColor: 'rgba(230, 126, 34, 0.5)',
+                            borderDash: [5, 5],
+                            pointRadius: 0,
+                            yAxisID: 'y1',
+                            fill: false
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                    scales: {
+                        x: {
+                            stacked: true,
+                        },
+                        y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            title: {
+                                display: true,
+                                text: 'Active Instances'
+                            },
+                            min: 0,
+                            max: 12
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            title: {
+                                display: true,
+                                text: 'CPU Utilization (%)'
+                            },
+                            min: 0,
+                            max: 100,
+                            grid: {
+                                drawOnChartArea: false,
+                            },
+                        },
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                title: tooltipTitleCallback
+                            }
+                        }
+                    }
+                }
+            });
+
+            const btnTarget = document.getElementById('btn-target');
+            const btnScheduled = document.getElementById('btn-scheduled');
+
+            function updateChart(policy) {
+                let data;
+                if (policy === 'target') {
+                    data = targetTrackingData;
+                    btnTarget.classList.add('active');
+                    btnScheduled.classList.remove('active');
+                    scalingChart.data.datasets[2].data = data.targetLine;
+                    scalingChart.options.scales.y.max = 12;
+
+                } else {
+                    data = scheduledData;
+                    btnTarget.classList.remove('active');
+                    btnScheduled.classList.add('active');
+                    scalingChart.data.datasets[2].data = data.targetLine;
+                    scalingChart.options.scales.y.max = 12;
+                }
+                scalingChart.data.datasets[0].data = data.cpu;
+                scalingChart.data.datasets[1].data = data.instances;
+                scalingChart.update();
+            }
+
+            btnTarget.addEventListener('click', () => updateChart('target'));
+            btnScheduled.addEventListener('click', () => updateChart('scheduled'));
+        });
+    </script>
+</body>
+</html>

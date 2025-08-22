@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linux File Descriptors Diagram</title>
+    <!-- Using Tailwind CSS for a clean, modern look. -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a202c;
+            color: #e2e8f0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        .container {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .card {
+            background-color: #2d3748;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border: 1px solid #4a5568;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            font-weight: bold;
+            font-size: 1.25rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            color: #63b3ed; /* Light blue header color */
+        }
+
+        .table-entry {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem;
+            background-color: #4a5568;
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+            border: 1px solid #718096;
+            transition: transform 0.2s ease-in-out;
+        }
+        .table-entry:hover {
+            transform: scale(1.02);
+        }
+
+        .table-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .pointer {
+            background-color: #68d391; /* Green pointer */
+            width: 1rem;
+            height: 1rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1a202c;
+            font-weight: bold;
+            font-size: 0.75rem;
+        }
+
+        .line {
+            position: absolute;
+            background-color: #a0aec0; /* Gray line color */
+            z-index: -1;
+            /* Animation for drawing the lines */
+            animation: draw-line 1s ease-out forwards;
+        }
+
+        /* Keyframes for the line drawing animation */
+        @keyframes draw-line {
+            from {
+                transform: scaleX(0);
+            }
+            to {
+                transform: scaleX(1);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-200 p-8">
+    <div class="flex flex-col items-center w-full max-w-7xl relative">
+        <h1 class="text-3xl md:text-4xl font-extrabold text-blue-400 mb-8 text-center">Linux File Descriptor Architecture</h1>
+        <p class="text-lg text-gray-400 mb-12 text-center max-w-2xl">
+            This diagram illustrates the relationship between the per-process file descriptor table, the system-wide open file table, and the inode table. It's the core of how Linux manages I/O operations.
+        </p>
+
+        <!-- Main container for the tables -->
+        <div class="container relative w-full">
+
+            <!-- Process Table Section -->
+            <div class="flex flex-col items-center w-full lg:w-1/2 xl:w-1/3">
+                <div class="header">Process Table</div>
+                <div class="card w-full mb-8">
+                    <div class="header text-lg">Process 1 (PID 1234)</div>
+                    <p class="text-sm text-center text-gray-400 mb-4">File Descriptor Table</p>
+                    <div class="table-entry">
+                        <span class="table-label font-mono">0 (stdin)</span>
+                        <span class="pointer text-black">→</span>
+                    </div>
+                    <div class="table-entry">
+                        <span class="table-label font-mono">1 (stdout)</span>
+                        <span class="pointer text-black">→</span>
+                    </div>
+                    <div class="table-entry">
+                        <span class="table-label font-mono">2 (stderr)</span>
+                        <span class="pointer text-black">→</span>
+                    </div>
+                    <div class="table-entry">
+                        <span class="table-label font-mono">3 (file.txt)</span>
+                        <span class="pointer text-black">→</span>
+                    </div>
+                </div>
+
+                <div class="card w-full">
+                    <div class="header text-lg">Process 2 (PID 5678)</div>
+                    <p class="text-sm text-center text-gray-400 mb-4">File Descriptor Table</p>
+                    <div class="table-entry">
+                        <span class="table-label font-mono">0 (stdin)</span>
+                        <span class="pointer text-black">→</span>
+                    </div>
+                    <div class="table-entry">
+                        <span class="table-label font-mono">1 (stdout)</span>
+                        <span class="pointer text-black">→</span>
+                    </div>
+                    <div class="table-entry">
+                        <span class="table-label font-mono">2 (stderr)</span>
+                        <span class="pointer text-black">→</span>
+                    </div>
+                    <div class="table-entry">
+                        <span class="table-label font-mono">3 (file.txt)</span>
+                        <span class="pointer text-black">→</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System-wide Open File Table Section -->
+            <div class="flex flex-col items-center w-full lg:w-1/2 xl:w-1/3 relative">
+                <div class="header">System-wide Open File Table</div>
+                <div class="card w-full relative">
+                    <div class="table-entry justify-between mb-2">
+                        <div class="flex flex-col">
+                            <span class="table-label text-white">Entry 1 (stdin)</span>
+                            <span class="text-xs text-gray-400">Offset: 0</span>
+                        </div>
+                        <span class="pointer">→</span>
+                    </div>
+                    <div class="table-entry justify-between mb-2">
+                        <div class="flex flex-col">
+                            <span class="table-label text-white">Entry 2 (stdout)</span>
+                            <span class="text-xs text-gray-400">Offset: 0</span>
+                        </div>
+                        <span class="pointer">→</span>
+                    </div>
+                    <div class="table-entry justify-between mb-2">
+                        <div class="flex flex-col">
+                            <span class="table-label text-white">Entry 3 (stderr)</span>
+                            <span class="text-xs text-gray-400">Offset: 0</span>
+                        </div>
+                        <span class="pointer">→</span>
+                    </div>
+                    <div class="table-entry justify-between mb-2">
+                        <div class="flex flex-col">
+                            <span class="table-label text-white">Entry 4 (file.txt)</span>
+                            <span class="text-xs text-gray-400">Offset: 450</span>
+                        </div>
+                        <span class="pointer">→</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Inode Table Section -->
+            <div class="flex flex-col items-center w-full xl:w-1/3 relative">
+                <div class="header">Inode Table</div>
+                <div class="card w-full">
+                    <div class="table-entry justify-between mb-2">
+                        <div class="flex flex-col">
+                            <span class="table-label text-white">Inode 1 (stdin)</span>
+                            <span class="text-xs text-gray-400">Type: FIFO</span>
+                        </div>
+                        <span class="pointer">→</span>
+                    </div>
+                    <div class="table-entry justify-between mb-2">
+                        <div class="flex flex-col">
+                            <span class="table-label text-white">Inode 2 (stdout)</span>
+                            <span class="text-xs text-gray-400">Type: FIFO</span>
+                        </div>
+                        <span class="pointer">→</span>
+                    </div>
+                    <div class="table-entry justify-between mb-2">
+                        <div class="flex flex-col">
+                            <span class="table-label text-white">Inode 3 (stderr)</span>
+                            <span class="text-xs text-gray-400">Type: FIFO</span>
+                        </div>
+                        <span class="pointer">→</span>
+                    </div>
+                    <div class="table-entry justify-between mb-2">
+                        <div class="flex flex-col">
+                            <span class="table-label text-white">Inode 4 (file.txt)</span>
+                            <span class="text-xs text-gray-400">Type: Regular File</span>
+                            <span class="text-xs text-gray-400">Links: 2</span>
+                            <span class="text-xs text-gray-400">Size: 1024 bytes</span>
+                        </div>
+                        <span class="pointer">→</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Blocks on Disk -->
+            <div class="flex flex-col items-center w-full">
+                <div class="header">Data Blocks on Disk</div>
+                <div class="card w-full flex-row justify-center gap-4 p-4">
+                    <div class="bg-gray-700 w-24 h-16 rounded-md p-2 text-center text-sm">Data Block A</div>
+                    <div class="bg-gray-700 w-24 h-16 rounded-md p-2 text-center text-sm">Data Block B</div>
+                    <div class="bg-gray-700 w-24 h-16 rounded-md p-2 text-center text-sm">Data Block C</div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</body>
+</html>

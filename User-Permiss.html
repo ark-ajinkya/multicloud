@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Linux User Permissions — Beginner to Advanced Poster</title>
+  <style>
+    :root{
+      --bg:#0f172a; /* slate-900 */
+      --panel:#111827ee; /* gray-900 */
+      --card:#111827;
+      --ink:#e5e7eb; /* gray-200 */
+      --muted:#cbd5e1; /* slate-300 */
+      --accent:#38bdf8; /* sky-400 */
+      --accent-2:#a78bfa; /* violet-400 */
+      --accent-3:#34d399; /* emerald-400 */
+      --warn:#fbbf24; /* amber-400 */
+      --danger:#f87171; /* red-400 */
+      --ok:#4ade80; /* green-400 */
+      --code:#0b1220; /* dark code bg */
+      --grid-gap: 1.1rem;
+      --radius: 18px;
+      --shadow: 0 6px 30px rgba(0,0,0,.35);
+      --maxw: 1120px;
+    }
+    *{box-sizing:border-box}
+    html, body{height:100%}
+    body{
+      margin:0; padding:0;
+      color:var(--ink);
+      background: radial-gradient(1000px 700px at 15% 5%, #0b1022 0%, var(--bg) 55%),
+                  radial-gradient(700px 600px at 90% 5%, #151a33 0%, var(--bg) 60%),
+                  var(--bg);
+      font: 500 16px/1.55 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+    }
+    header{
+      max-width:var(--maxw);
+      margin: 28px auto 20px;
+      padding: 22px 22px 18px;
+      background: linear-gradient(135deg, #0b1220, #121a33);
+      border:1px solid #1f2937;
+      border-radius: calc(var(--radius) + 6px);
+      box-shadow: var(--shadow);
+    }
+    .title{display:flex; align-items:center; gap:14px; flex-wrap:wrap}
+    .title h1{margin:0; font-size: clamp(28px, 4vw, 40px); letter-spacing:.3px}
+    .title .tag{background: #0e1726; border:1px solid #263346; padding:.25rem .6rem; border-radius:999px; color:var(--muted); font-size:.9rem}
+    .subtitle{color:var(--muted); margin:.35rem 0 0; font-size:clamp(14px, 2vw, 16px)}
+
+    main{max-width:var(--maxw); margin: 0 auto 80px; padding: 0 8px 32px}
+
+    .grid{display:grid; grid-template-columns: repeat(12, 1fr); gap: var(--grid-gap)}
+    .card{
+      grid-column: span 6;
+      background: linear-gradient(180deg, rgba(17,24,39,.85), rgba(17,24,39,.65));
+      border: 1px solid #1f2937;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 18px 18px 16px;
+    }
+    .wide{grid-column: 1 / -1}
+    .third{grid-column: span 4}
+    .two{grid-column: span 8}
+    .center{display:flex; align-items:center}
+
+    h2{margin:.2rem 0 1rem; font-size: clamp(20px, 2.6vw, 26px)}
+    h3{margin: .6rem 0 .6rem; font-size: 18px; color:#e9ecf3}
+    p{margin:.4rem 0}
+
+    .list{margin:.4rem 0; padding-left: 1.1rem}
+    .list li{margin:.25rem 0}
+
+    code, pre{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}
+    code{background: #0e1628; border: 1px solid #1f2b43; padding: .15rem .35rem; border-radius: 8px}
+    pre{background: var(--code); border:1px solid #1f2b43; border-radius: 14px; padding: 14px; overflow:auto; margin:.6rem 0}
+
+    .kpi{display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap:.6rem}
+    .kpi .pill{background:#0b1220; border:1px solid #223148; padding:.5rem .8rem; border-radius:12px; text-align:center}
+
+    .badge{font-size:.85rem; padding:.22rem .55rem; border-radius:999px; border:1px solid #263346; background:#0b1220; color:var(--muted)}
+    .b-accent{border-color:#124760; background: #0c2230; color:#a5e8ff}
+    .b-violet{border-color:#3b2b66; background:#1a1533; color:#d9ccff}
+    .b-emerald{border-color:#1f4a3f; background:#0f2a25; color:#caf7e4}
+    .b-amber{border-color:#5a4411; background:#2a210c; color:#ffe6a6}
+
+    table{width:100%; border-collapse:separate; border-spacing:0; margin:.4rem 0; border-radius:14px; overflow:hidden; border:1px solid #1f2937}
+    thead th{background:#0b1220; color:#cfe7ff; text-align:left; padding:.6rem .7rem; font-weight:700}
+    tbody td{border-top:1px solid #1f2937; padding:.55rem .7rem; color:var(--ink)}
+    tbody tr:nth-child(even){background:#0e1526}
+
+    .callout{display:flex; gap:.7rem; padding:.75rem .9rem; background:#0b1220; border:1px solid #223148; border-radius:14px; margin:.6rem 0}
+    .callout strong{color:#d1e4ff}
+
+    .hl{color:var(--accent)}
+    .example{border-left:4px solid var(--accent); padding-left:.75rem}
+
+    .footer{max-width:var(--maxw); margin: 22px auto 60px; color:#94a3b8; text-align:center; font-size:.95rem}
+
+    /* Print tweaks for an A4-friendly poster */
+    @media print{
+      body{background:white; color:#0b1220}
+      header, .card{box-shadow:none}
+      header{border-color:#ddd}
+      .card{border-color:#ddd}
+      .title .tag{border-color:#ddd}
+      code, pre{border-color:#ddd}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="title">
+      <h1>Linux User Permissions</h1>
+      <span class="tag">Beginner → Advanced</span>
+      <span class="tag">r · w · x &amp; sticky</span>
+    </div>
+    <p class="subtitle">A visual, single‑page reference to understand, read, and set permissions correctly for files and directories on Linux.</p>
+  </header>
+
+  <main>
+    <section class="grid">
+      <article class="card third">
+        <h2>1) Who can access?</h2>
+        <p>Every file has three <strong>classes</strong> of users:</p>
+        <ul class="list">
+          <li><span class="badge b-accent">u</span> = <strong>owner</strong> (creator, or set via <code>chown</code>)</li>
+          <li><span class="badge b-violet">g</span> = <strong>group</strong> (primary group of the file)</li>
+          <li><span class="badge b-emerald">o</span> = <strong>others</strong> (everyone else)</li>
+        </ul>
+        <div class="callout"><strong>TIP:</strong> Change owner/group: <code>sudo chown user:group file</code></div>
+      </article>
+
+      <article class="card two">
+        <h2>2) What do r, w, x mean?</h2>
+        <div class="grid" style="grid-template-columns: repeat(3, 1fr); gap:.8rem">
+          <div class="pill" style="background:#0f1a2e; border:1px solid #223148; border-radius:14px; padding:.6rem .7rem">
+            <h3>For <span class="hl">files</span></h3>
+            <ul class="list">
+              <li><strong>r</strong>ead → view content</li>
+              <li><strong>w</strong>rite → modify content</li>
+              <li><strong>x</strong>ecute → run as a program/script</li>
+            </ul>
+          </div>
+          <div class="pill" style="background:#10172b; border:1px solid #223148; border-radius:14px; padding:.6rem .7rem">
+            <h3>For <span class="hl">directories</span></h3>
+            <ul class="list">
+              <li><strong>r</strong>ead → list names (<code>ls</code>)</li>
+              <li><strong>w</strong>rite → create/delete entries</li>
+              <li><strong>x</strong>ecute → <em>traverse</em> (enter with <code>cd</code>, access items)</li>
+            </ul>
+          </div>
+          <div class="pill" style="background:#112035; border:1px solid #223148; border-radius:14px; padding:.6rem .7rem">
+            <h3>Combined</h3>
+            <ul class="list">
+              <li>Dir <strong>r+x</strong> required to <code>ls</code> with details</li>
+              <li>Dir <strong>w+x</strong> to add/remove files</li>
+              <li>File <strong>x</strong> is meaningless without <strong>r</strong> for scripts you interpret</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <article class="card wide">
+        <h2>3) Reading <code>ls -l</code></h2>
+        <pre><code>$ ls -l
+-rwxr-x--- 1 alice devs  9320 Aug 21 10:15 app.sh
+^||| ^|^|   ^   ^     ^    ^        ^
+|||  | |    |   |     |    |        └── name
+|||  | |    |   |     |    └───────── modified time
+|||  | |    |   |     └────────────── size
+|||  | |    |   └──────────────────── group
+|||  | |    └──────────────────────── owner
+|||  | └───────────────────────────── link count
+|||  └──────────────────────────────── type (- file, d dir)
+└┴┴─── u   g   o  (rwx / rw- / r--)</code></pre>
+        <div class="kpi">
+          <div class="pill">Types: <code>- d l c b s p</code></div>
+          <div class="pill">Example mask: <code>-rwxr-x---</code></div>
+          <div class="pill">Octal: <code>750</code></div>
+        </div>
+      </article>
+
+      <article class="card third">
+        <h2>4) Octal mapping</h2>
+        <table>
+          <thead><tr><th>Bit</th><th>Value</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td>r</td><td>4</td><td>read</td></tr>
+            <tr><td>w</td><td>2</td><td>write</td></tr>
+            <tr><td>x</td><td>1</td><td>execute</td></tr>
+          </tbody>
+        </table>
+        <p class="example"><strong>Example:</strong> <code>chmod 640 file</code> → <em>u</em>=6 (rw-), <em>g</em>=4 (r--), <em>o</em>=0 (---)</p>
+      </article>
+
+      <article class="card two">
+        <h2>5) <code>chmod</code> — numeric &amp; symbolic</h2>
+        <div class="grid" style="grid-template-columns: repeat(2, 1fr); gap:.8rem">
+          <div>
+            <h3>Numeric</h3>
+            <pre><code>chmod 755 app.sh   # u=rwx, g=rx, o=rx
+chmod 640 doc.txt # u=rw, g=r, o=---</code></pre>
+          </div>
+          <div>
+            <h3>Symbolic</h3>
+            <pre><code>chmod u+x,g-w,o=rx  script.sh
+chmod a-rwx,u+rwX   -R project/</code></pre>
+            <p><code>X</code> adds execute only if target is a directory or already executable.</p>
+          </div>
+        </div>
+        <div class="callout"><strong>Recursive:</strong> <code>chmod -R 750 dir/</code> 
+          <span class="badge b-amber" style="margin-left:.5rem">Use with care</span></div>
+      </article>
+
+      <article class="card third">
+        <h2>6) Ownership</h2>
+        <pre><code>chown user file
+chown user:group file
+chgrp group file</code></pre>
+        <p>Only root can change owner. Any user can change group to one they belong to (depending on distro policy).</p>
+      </article>
+
+      <article class="card two">
+        <h2>7) Default perms with <code>umask</code></h2>
+        <p><strong>umask</strong> subtracts bits from the default creation mode (usually 666 for files, 777 for directories).</p>
+        <pre><code># show current mask
+umask        # e.g., 0022
+
+# effective defaults
+files:      666 - 022 = 644  (rw-r--r--)
+directories: 777 - 022 = 755  (rwxr-xr-x)</code></pre>
+        <p class="example"><strong>Collaborative env:</strong> <code>umask 0002</code> → group‑writable by default.</p>
+      </article>
+
+      <article class="card third">
+        <h2>8) Special bits (advanced)</h2>
+        <table>
+          <thead>
+            <tr><th>Bit</th><th>Octal</th><th>Applies to</th><th>Effect</th><th>Symbol</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>setuid</strong></td>
+              <td>4---</td>
+              <td>Executable file</td>
+              <td>Runs with <em>file owner</em>'s UID</td>
+              <td><code>rws</code> in user exec position</td>
+            </tr>
+            <tr>
+              <td><strong>setgid</strong></td>
+              <td>2---</td>
+              <td>Executable / Directory</td>
+              <td>Exec: runs with file GID; Dir: new files inherit directory group</td>
+              <td><code>rwx</code> with <code>s</code> in group exec</td>
+            </tr>
+            <tr>
+              <td><strong>sticky</strong></td>
+              <td>1---</td>
+              <td>Directory</td>
+              <td>Only owner (or root) may delete/rename items inside</td>
+              <td><code>t</code> in others exec</td>
+            </tr>
+          </tbody>
+        </table>
+        <pre><code># examples
+chmod 4755 /usr/local/bin/tool   # setuid
+chmod 2775 /srv/shared           # setgid on dir (group inheritance)
+chmod 1777 /tmp                  # sticky bit (public, safe deletes)</code></pre>
+      </article>
+
+      <article class="card wide">
+        <h2>9) Sticky bit explained</h2>
+        <p>The <strong>sticky bit</strong> (<code>+t</code>) on a <em>directory</em> prevents users from deleting or renaming files they don’t own even if the directory is world‑writable.</p>
+        <div class="grid" style="grid-template-columns: repeat(3, 1fr); gap:.8rem">
+          <div class="pill">
+            <h3>Where it’s used</h3>
+            <ul class="list">
+              <li><code>/tmp</code>, <code>/var/tmp</code></li>
+              <li>Team drop‑folders</li>
+              <li>Shared upload directories</li>
+            </ul>
+          </div>
+          <div class="pill">
+            <h3>How to set</h3>
+            <pre><code>chmod +t shared/
+chmod 1777 shared/</code></pre>
+            <p>Both commands are equivalent; octal is explicit.</p>
+          </div>
+          <div class="pill">
+            <h3>How it looks</h3>
+            <pre><code>$ ls -ld /tmp
+ drwxrwxrwt ... /tmp
+           ^ t in others exec</code></pre>
+          </div>
+        </div>
+        <div class="callout"><strong>Remember:</strong> sticky bit on <em>files</em> is ignored on modern Linux. It’s meaningful only for directories.</div>
+      </article>
+
+      <article class="card third">
+        <h2>10) Quick recipes</h2>
+        <ul class="list">
+          <li>Make script executable: <code>chmod u+x script.sh</code></li>
+          <li>Private key safety: <code>chmod 600 id_rsa</code></li>
+          <li>Private dir: <code>chmod 700 ~/secret</code></li>
+          <li>Shared project (group devs): <code>chgrp -R devs proj &amp;&amp; chmod -R 2775 proj</code></li>
+        </ul>
+      </article>
+
+      <article class="card third">
+        <h2>11) Security pitfalls</h2>
+        <ul class="list">
+          <li><span class="badge b-amber">Over‑permissive</span> <code>777</code> everywhere → avoid.</li>
+          <li>Executables with <span class="badge b-amber">setuid root</span> → audit necessity.</li>
+          <li>World‑writable dirs <em>without</em> sticky → users can delete each other’s files.</li>
+          <li>Scripts with <code>setuid</code> are ignored by most shells (not effective).</li>
+        </ul>
+      </article>
+
+      <article class="card third">
+        <h2>12) Cheat‑sheet</h2>
+        <table>
+          <thead><tr><th>Goal</th><th>Command</th></tr></thead>
+          <tbody>
+            <tr><td>Show perms</td><td><code>stat -c "%A %a %U:%G %n" *</code></td></tr>
+            <tr><td>Grant execute to all</td><td><code>chmod a+x file</code></td></tr>
+            <tr><td>Remove world access</td><td><code>chmod o-rwx file</code></td></tr>
+            <tr><td>Mirror perms from file A → B</td><td><code>chmod --reference=A B</code></td></tr>
+            <tr><td>Default new‑file perms</td><td><code>umask</code></td></tr>
+          </tbody>
+        </table>
+      </article>
+
+      <article class="card wide">
+        <h2>13) Practice lab (try this!)</h2>
+        <ol class="list">
+          <li>Create users <code>alice</code>, <code>bob</code> and group <code>team</code>. Add both to <code>team</code>.</li>
+          <li>Create <code>/srv/teamshare</code>, set owner root:team, and perms <code>2775</code>.</li>
+          <li>Inside, make files as alice and bob; verify group inheritance (<code>ls -l</code> shows <code>team</code>).</li>
+          <li>Set sticky bit and world‑write on <code>/srv/drop</code> using <code>1777</code>. Verify deletion behavior.</li>
+          <li>Experiment with <code>umask 0002</code> vs <code>0022</code> and compare defaults.</li>
+        </ol>
+        <div class="callout"><strong>Deliverable:</strong> A short report with commands used, <code>ls -l</code> outputs, and your observations.</div>
+      </article>
+
+      <article class="card wide">
+        <h2>14) Symbolic vs Octal at a glance</h2>
+        <table>
+          <thead>
+            <tr><th>Desired</th><th>Symbolic</th><th>Octal</th><th>Result</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>u=rwx, g=rx, o=rx</td><td><code>chmod u=rwx,g=rx,o=rx f</code></td><td><code>chmod 755 f</code></td><td><code>-rwxr-xr-x</code></td></tr>
+            <tr><td>u=rw, g=r, o=---</td><td><code>chmod u=rw,g=r,o= f</code></td><td><code>chmod 640 f</code></td><td><code>-rw-r-----</code></td></tr>
+            <tr><td>Dir with setgid</td><td><code>chmod g+s dir</code></td><td><code>chmod 2775 dir</code></td><td><code>drwxrwsr-x</code></td></tr>
+            <tr><td>Sticky public temp</td><td><code>chmod +t dir</code></td><td><code>chmod 1777 dir</code></td><td><code>drwxrwxrwt</code></td></tr>
+          </tbody>
+        </table>
+      </article>
+
+      <article class="card wide">
+        <h2>15) Mental model</h2>
+        <p>Think of permissions as <em>who</em> (u/g/o) can do <em>what</em> (r/w/x) to <em>which</em> object (file vs directory). Special bits (<strong>setuid/setgid/sticky</strong>) tweak defaults for execution, inheritance, and safety in shared spaces.</p>
+      </article>
+    </section>
+  </main>
+
+  <div class="footer">
+    © Day-13 1-8-2025 Linux Permissions Poster · Designed by Ajinkya — printable &amp; shareable.
+  </div>
+</body>
+</html>

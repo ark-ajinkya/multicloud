@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The sed Command: A Visual Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F7FAFC;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .flow-box {
+            border: 2px solid #4A5568;
+            background-color: #EDF2F7;
+            color: #1A202C;
+            padding: 0.75rem 1.25rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        .flow-arrow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: #718096;
+            margin: 0 0.5rem;
+        }
+        .code-block {
+            background-color: #1A202C;
+            color: #F7FAFC;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .table-header {
+            background-color: #2D3748;
+            color: #FFFFFF;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <div class="container mx-auto p-4 md:p-8">
+
+        <header class="text-center mb-12">
+            <h1 class="text-5xl md:text-7xl font-black text-gray-800 mb-2">The <span style="color: #4299E1;">sed</span> Command</h1>
+            <p class="text-xl md:text-2xl text-gray-600">A Visual Guide to the Stream Editor</p>
+        </header>
+
+        <section id="basics" class="mb-16">
+            <h2 class="text-3xl font-bold text-center mb-8">🚀 What is `sed`?</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <p class="text-5xl mb-4">📜</p>
+                    <h3 class="text-xl font-bold mb-2">Stream Editor</h3>
+                    <p class="text-gray-600">It processes text line-by-line from a stream, making it memory-efficient for large files.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <p class="text-5xl mb-4">🤖</p>
+                    <h3 class="text-xl font-bold mb-2">Non-Interactive</h3>
+                    <p class="text-gray-600">Commands are provided in a script, allowing for automated text transformations.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <p class="text-5xl mb-4">↔️</p>
+                    <h3 class="text-xl font-bold mb-2">Standard I/O</h3>
+                    <p class="text-gray-600">Reads from files or standard input and writes to standard output, leaving original files untouched by default.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="syntax" class="mb-16 bg-white p-8 rounded-lg shadow-lg">
+            <h2 class="text-3xl font-bold text-center mb-8">⚙️ Anatomy of a Command</h2>
+            <div class="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-4">
+                <div class="flow-box bg-blue-100 border-blue-400">sed</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-box">[OPTIONS]</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-box text-red-700 bg-red-100 border-red-400">'COMMAND'</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-box">[FILE...]</div>
+            </div>
+            <p class="text-center text-gray-600 mt-6">A `sed` operation consists of the command itself, optional flags to modify its behavior (like `-i` for in-place editing), the core command to execute, and the target file.</p>
+        </section>
+
+
+        <section id="commands" class="mb-16">
+            <h2 class="text-3xl font-bold text-center mb-4">🔍 The Core Toolkit</h2>
+            <p class="text-center text-gray-600 mb-8 max-w-3xl mx-auto">While `sed` has many commands, a few are used far more often than others. The substitute command (`s`) is by far the most common, forming the backbone of most `sed` scripts.</p>
+            <div class="chart-container mb-12">
+                <canvas id="commandUsageChart"></canvas>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-2xl font-bold mb-4 text-blue-600">🅰️ Substitution (`s`)</h3>
+                    <p class="mb-4 text-gray-600">The workhorse of `sed`. It finds text matching a pattern and replaces it. The `g` flag makes it "global," replacing all occurrences on a line.</p>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left">
+                            <thead class="table-header">
+                                <tr><th class="p-2">Example</th><th class="p-2">Description</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b"><td class="p-2 font-mono">s/old/new/</td><td class="p-2">Replace first "old" with "new".</td></tr>
+                                <tr class="border-b"><td class="p-2 font-mono">s/old/new/g</td><td class="p-2">Replace all "old" with "new".</td></tr>
+                                <tr class="border-b"><td class="p-2 font-mono">s/old/new/gi</td><td class="p-2">Case-insensitive global replace.</td></tr>
+                                <tr><td class="p-2 font-mono">s/^#//</td><td class="p-2">Remove `#` from start of line.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-2xl font-bold mb-4 text-teal-600">🅱️ Deletion (`d`)</h3>
+                    <p class="mb-4 text-gray-600">Used to remove entire lines from the output. You can specify line numbers, ranges, or patterns to target for deletion.</p>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left">
+                            <thead class="table-header">
+                                <tr><th class="p-2">Example</th><th class="p-2">Description</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b"><td class="p-2 font-mono">/pattern/d</td><td class="p-2">Delete lines with "pattern".</td></tr>
+                                <tr class="border-b"><td class="p-2 font-mono">1,5d</td><td class="p-2">Delete lines 1 through 5.</td></tr>
+                                <tr class="border-b"><td class="p-2 font-mono">/^\s*$/d</td><td class="p-2">Delete empty or whitespace lines.</td></tr>
+                                <tr><td class="p-2 font-mono">$d</td><td class="p-2">Delete the last line.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-2xl font-bold mb-4 text-orange-500">🅲️ Printing (`p`)</h3>
+                    <p class="mb-4 text-gray-600">Explicitly prints lines. This is powerful when combined with the `-n` option, which suppresses default output, letting you show only matching lines.</p>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left">
+                            <thead class="table-header">
+                                <tr><th class="p-2">Example</th><th class="p-2">Description</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b"><td class="p-2 font-mono">-n '/err/p'</td><td class="p-2">Print only lines with "err".</td></tr>
+                                <tr class="border-b"><td class="p-2 font-mono">-n '10,20p'</td><td class="p-2">Print only lines 10 to 20.</td></tr>
+                                <tr><td class="p-2 font-mono">-n '$p'</td><td class="p-2">Print only the last line.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-2xl font-bold mb-4 text-pink-500">🅳️ Insert/Append (`i`/`a`)</h3>
+                    <p class="mb-4 text-gray-600">Adds new lines of text to the output, either before (`i` for insert) or after (`a` for append) a specified line or pattern match.</p>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left">
+                            <thead class="table-header">
+                                <tr><th class="p-2">Example</th><th class="p-2">Description</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b"><td class="p-2 font-mono">1i\'Header'</td><td class="p-2">Insert "Header" before line 1.</td></tr>
+                                <tr class="border-b"><td class="p-2 font-mono">$a\'Footer'</td><td class="p-2">Append "Footer" after last line.</td></tr>
+                                <tr><td class="p-2 font-mono">/ERROR/i\'-- FIX --'</td><td class="p-2">Insert "-- FIX --" before error lines.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="advanced" class="mb-16">
+            <h2 class="text-3xl font-bold text-center mb-8">🧠 Advanced Techniques</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-2xl font-bold mb-4">Back-references</h3>
+                    <p class="mb-4 text-gray-600">Reuse parts of a matched pattern. `&` refers to the entire match, while `\1`, `\2`, etc., refer to captured groups `(...)`.</p>
+                    <p class="font-semibold">Example: Reformat a name</p>
+                    <div class="my-2">
+                        <p class="text-sm text-gray-500">Input: "John Doe"</p>
+                        <code class="code-block text-sm">s/\(.*\)\ \(.*\)/\2, \1/</code>
+                        <p class="text-sm text-gray-500 mt-1">Output: "Doe, John"</p>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-2xl font-bold mb-4">Hold Space</h3>
+                    <p class="mb-4 text-gray-600">A secondary buffer for complex, multi-line operations. You can copy, append, or swap data between the current line (pattern space) and the hold space.</p>
+                    <div class="flex items-center justify-around p-2 bg-gray-100 rounded">
+                        <div class="text-center">
+                            <div class="p-3 border-2 border-dashed border-blue-400 rounded">Pattern Space</div>
+                            <div class="text-xs text-gray-500">(Current Line)</div>
+                        </div>
+                        <div class="text-2xl font-mono text-gray-500 flex flex-col items-center">
+                            <span class="text-sm">h, H ↔ g, G</span>
+                            <span class="text-lg">x</span>
+                        </div>
+                        <div class="text-center">
+                            <div class="p-3 border-2 border-dashed border-teal-400 rounded">Hold Space</div>
+                            <div class="text-xs text-gray-500">(Temp Buffer)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="tips" class="bg-gray-800 text-white p-8 rounded-lg shadow-lg">
+            <h2 class="text-3xl font-bold text-center mb-6">⚠️ Power User Tips</h2>
+            <ul class="list-disc list-inside max-w-2xl mx-auto space-y-3">
+                <li><strong>Create Backups:</strong> Before using `sed -i` for in-place editing, always back up your original file. A safe way is `sed -i.bak '...' file.txt`, which creates `file.txt.bak`.</li>
+                <li><strong>Choose Your Regex:</strong> By default, `sed` uses Basic Regular Expressions (BRE). Use the `-E` or `-r` flag to switch to Extended Regular Expressions (ERE) for more powerful patterns like `+`, `?`, and `|`.</li>
+                <li><strong>Chain Commands:</strong> Use the `-e` option or a semicolon `;` to execute multiple commands in a single `sed` operation for more efficient processing.</li>
+            </ul>
+        </section>
+
+        <footer class="text-center mt-12 text-gray-500">
+            <p>✨ `sed` is an essential tool for efficient text processing on the command line. ✨</p>
+        </footer>
+
+    </div>
+
+    <script>
+        const wrapLabel = (label, maxLength = 16) => {
+            if (label.length <= maxLength) {
+                return label;
+            }
+            const words = label.split(' ');
+            const lines = [];
+            let currentLine = '';
+            for (const word of words) {
+                if ((currentLine + ' ' + word).trim().length > maxLength) {
+                    lines.push(currentLine.trim());
+                    currentLine = word;
+                } else {
+                    currentLine = (currentLine + ' ' + word).trim();
+                }
+            }
+            if (currentLine) {
+                lines.push(currentLine.trim());
+            }
+            return lines;
+        };
+        
+        const tooltipTitleCallback = (tooltipItems) => {
+            const item = tooltipItems[0];
+            let label = item.chart.data.labels[item.dataIndex];
+            if (Array.isArray(label)) {
+                return label.join(' ');
+            }
+            return label;
+        };
+
+        const commandUsageCtx = document.getElementById('commandUsageChart').getContext('2d');
+        new Chart(commandUsageCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Substitution (s)', 'Deletion (d)', 'Printing (p)', 'Insert/Append (i/a)'],
+                datasets: [{
+                    label: 'Frequency of Use (%)',
+                    data: [65, 20, 10, 5],
+                    backgroundColor: [
+                        '#4299E1',
+                        '#4FD1C5',
+                        '#F6AD55',
+                        '#ED64A6'
+                    ],
+                    borderColor: [
+                        '#2B6CB0',
+                        '#319795',
+                        '#B7791F',
+                        '#B83280'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: 'y',
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        grid: {
+                            color: '#E2E8F0'
+                        },
+                        ticks: {
+                           color: '#4A5568'
+                        }
+                    },
+                    y: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                           color: '#2D3748',
+                           font: {
+                               weight: '600'
+                           }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            title: tooltipTitleCallback
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>
